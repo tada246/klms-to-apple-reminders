@@ -1,4 +1,4 @@
-import os
+from __future__ import annotations
 import requests
 from datetime import datetime, timedelta, timezone
 
@@ -51,12 +51,15 @@ class CanvasClient:
                 continue
             plannable = item.get("plannable", {})
             due_at = plannable.get("due_at") or item.get("plannable_date")
+            url = item.get("html_url", "")
+            if url and url.startswith("/"):
+                url = f"{KLMS_BASE_URL}{url}"
             assignments.append({
                 "id": f"{item['plannable_type']}_{item['plannable_id']}",
                 "title": plannable.get("title", "（タイトル不明）"),
                 "course_name": item.get("context_name", ""),
                 "due_at": due_at,
-                "url": item.get("html_url", ""),
+                "url": url,
                 "submitted": item.get("submissions", {}).get("submitted", False),
             })
         return assignments

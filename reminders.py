@@ -1,3 +1,4 @@
+from __future__ import annotations
 import subprocess
 from datetime import datetime, timezone
 
@@ -39,32 +40,41 @@ tell application "Reminders"
     end if
 end tell
 '''
-    subprocess.run(["osascript", "-e", script], check=True)
+    subprocess.run(["osascript", "-e", script], check=True, capture_output=True)
 
 
 def add_reminder(list_name: str, title: str, due_at: str | None, notes: str = "") -> None:
     """Add a single reminder to the specified list."""
-    props = f'name:"{_escape(title)}"'
+    # Build date block separately to avoid locale-dependent string parsing
+    date_block = ""
     if due_at:
         try:
-            # Parse ISO 8601 → local datetime string for AppleScript
-            dt = datetime.fromisoformat(due_at.replace("Z", "+00:00"))
-            dt_local = dt.astimezone()
-            # AppleScript date format: "Wednesday, May 7, 2025 at 11:59:00 PM"
-            apple_date = dt_local.strftime("%A, %B %-d, %Y at %-I:%M:%S %p")
-            props += f', due date:date "{_escape(apple_date)}"'
+            dt = datetime.fromisoformat(due_at.replace("Z", "+00:00")).astimezone()
+            date_block = f"""
+    set dueDate to current date
+    set year of dueDate to {dt.year}
+    set month of dueDate to {dt.month}
+    set day of dueDate to {dt.day}
+    set hours of dueDate to {dt.hour}
+    set minutes of dueDate to {dt.minute}
+    set seconds of dueDate to {dt.second}
+    set due date of newReminder to dueDate"""
         except Exception:
             pass
+
+    notes_block = ""
     if notes:
-        props += f', body:"{_escape(notes)}"'
+        escaped_notes = _escape(notes)
+        notes_block = f'\n    set body of newReminder to "{escaped_notes}"'
 
     script = f'''
 tell application "Reminders"
     set theList to list "{_escape(list_name)}"
-    make new reminder at theList with properties {{{props}}}
+    set newReminder to make new reminder at theList with properties {{name:"{_escape(title)}"}}
+{date_block}{notes_block}
 end tell
 '''
-    subprocess.run(["osascript", "-e", script], check=True)
+    subprocess.run(["osascript", "-e", script], check=True, capture_output=True)
 
 
 def sync_assignments(assignments: list[dict], list_name: str) -> dict:

@@ -7,87 +7,63 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0E4F7856639E75A30B48AC57 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF44EE4ADA6EACA068BD4073 /* Assignment.swift */; };
-		4BF34A0DFB53C224DBCC3968 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9E76104226F39C76CCEC22 /* AppSettings.swift */; };
-		4D6F7A323E5AFD6C09CE95C1 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829D5E899148E74DC6DE1C2A /* SyncCoordinator.swift */; };
-		64E550DFC9455F8DEB912507 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6964580D8C84C55B8D14C6B7 /* RemindersService.swift */; };
-		6AC19E203617F83828D74212 /* KLMS_to_TodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2191A0CDD8CD20FF9C5014A0 /* KLMS_to_TodoApp.swift */; };
-		79971533D7752D07375E7739 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415A77B6362FDE583E23ECF /* AppDelegate.swift */; };
-		8334198C5E65BCECA46B5EFD /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C478E138A6A7730AC413114 /* SchedulerService.swift */; };
-		8F175EAF3F756514A87D1A87 /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F4FB7AD5CE20C1EC1D43DA /* StatusItemManager.swift */; };
-		963323ED62520DD65935E83D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3349D8AAC2263D750CB9435C /* SettingsView.swift */; };
-		DAE739F4095F779F0579E001 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06A6316E5EA8700959F4BA1 /* KeychainHelper.swift */; };
-		DF3E4712FEC0996D68DF687E /* KLMSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F54A8769543B8FD761793C /* KLMSClient.swift */; };
-		F07CAF04BDD987A2F6B2F5F9 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705208C75BBB9613B669139D /* MenuBarView.swift */; };
-		F6D38D9473CCF3A7900E50F4 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D037C425E4E4A5C86FA43 /* SyncResult.swift */; };
+		14BDB6F91656668D3694D63D /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43EDF3C9AFF23ECC4DE43BF /* Assignment.swift */; };
+		1AD02D7C245314112A3061DE /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8DACAF8011E1B9E48ADBC5E /* SchedulerService.swift */; };
+		23B6A1A649698C94ED0223E1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAD1C7EFAF7F60723CDFBE7 /* SyncResult.swift */; };
+		265ACC1B59DBA328E845CA78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFD131A8542782F72E6B1DE /* AppDelegate.swift */; };
+		308202EA1855CCCFB1880A6F /* KLMS_to_TodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89F6B9199F75BE2DE6D7AEC /* KLMS_to_TodoApp.swift */; };
+		400276B677B3404A9994DD04 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D0DC131E9013FF50BFA59D7 /* MenuBarView.swift */; };
+		4B562A81F8235DEC3E971FD8 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9AD016C6A4146B6442F07E6C /* Info.plist */; };
+		4E12ED757A4E5A03EEA0DCE2 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1064A73360F56F50DA77A6 /* KeychainHelper.swift */; };
+		666831C61103857A0C946EB1 /* KLMSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F88721392E2384BBE2C92AC /* KLMSClient.swift */; };
+		678221EA60E4EDDA294E4BC8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB7ECFAE2613067532E0BA1 /* SettingsView.swift */; };
+		77E6AE7DDB4791B68403DAC9 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE72F9040045A63FFE9F00FE /* RemindersService.swift */; };
+		7D1050E03EB97FA9BCAD52F2 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35A66B7D56389C689007203 /* AppSettings.swift */; };
+		87D8A9189F38BD4DCD261278 /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A619BE57A8D89C97ADA007 /* StatusItemManager.swift */; };
+		AE8A9B654A1EEC0D7B2F9532 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0FE8D93934934B81D4E769 /* SyncCoordinator.swift */; };
+		B5179C045C0041F929C427F0 /* KLMS-to-Todo.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = 6BC4B7BFF77B5B4F6D11A348 /* KLMS-to-Todo.xcodeproj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		05F4FB7AD5CE20C1EC1D43DA /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
-		09F68B83A2853644C734A706 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		2191A0CDD8CD20FF9C5014A0 /* KLMS_to_TodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMS_to_TodoApp.swift; sourceTree = "<group>"; };
-		3349D8AAC2263D750CB9435C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		45F54A8769543B8FD761793C /* KLMSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSClient.swift; sourceTree = "<group>"; };
-		6964580D8C84C55B8D14C6B7 /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
-		705208C75BBB9613B669139D /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
-		7C478E138A6A7730AC413114 /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
-		829D5E899148E74DC6DE1C2A /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
+		3FB7ECFAE2613067532E0BA1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4F88721392E2384BBE2C92AC /* KLMSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSClient.swift; sourceTree = "<group>"; };
+		4FFD131A8542782F72E6B1DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5FAD1C7EFAF7F60723CDFBE7 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+		6BC4B7BFF77B5B4F6D11A348 /* KLMS-to-Todo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "KLMS-to-Todo.xcodeproj"; sourceTree = "<group>"; };
+		7D0DC131E9013FF50BFA59D7 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		86A619BE57A8D89C97ADA007 /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
 		9455B6F0A49C766C8EFE201D /* KLMS-to-Todo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KLMS-to-Todo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A06A6316E5EA8700959F4BA1 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
-		AD9E76104226F39C76CCEC22 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		B415A77B6362FDE583E23ECF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BF44EE4ADA6EACA068BD4073 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
-		DE1F71DE3926FC554A6978C4 /* KLMS-to-Todo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "KLMS-to-Todo.entitlements"; sourceTree = "<group>"; };
-		EC1D037C425E4E4A5C86FA43 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+		9AD016C6A4146B6442F07E6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A0C612FB1CD1EF92431C1466 /* KLMS-to-Todo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "KLMS-to-Todo.entitlements"; sourceTree = "<group>"; };
+		A35A66B7D56389C689007203 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		B8DACAF8011E1B9E48ADBC5E /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
+		C43EDF3C9AFF23ECC4DE43BF /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
+		C89F6B9199F75BE2DE6D7AEC /* KLMS_to_TodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMS_to_TodoApp.swift; sourceTree = "<group>"; };
+		CD0FE8D93934934B81D4E769 /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
+		EE72F9040045A63FFE9F00FE /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
+		FB1064A73360F56F50DA77A6 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		12D5BBD880A98B8DABA583DD /* Storage */ = {
+		1E87BE465C985C65E196E2A3 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				AD9E76104226F39C76CCEC22 /* AppSettings.swift */,
-				A06A6316E5EA8700959F4BA1 /* KeychainHelper.swift */,
-			);
-			path = Storage;
-			sourceTree = "<group>";
-		};
-		187222F4AB76EE2BE86879C3 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				B415A77B6362FDE583E23ECF /* AppDelegate.swift */,
-				2191A0CDD8CD20FF9C5014A0 /* KLMS_to_TodoApp.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
-		1B9336961970970D2DA01663 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				705208C75BBB9613B669139D /* MenuBarView.swift */,
-				3349D8AAC2263D750CB9435C /* SettingsView.swift */,
-				05F4FB7AD5CE20C1EC1D43DA /* StatusItemManager.swift */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		292828F6F0DA1148A5FA9DB4 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				BF44EE4ADA6EACA068BD4073 /* Assignment.swift */,
-				EC1D037C425E4E4A5C86FA43 /* SyncResult.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		6460D76BD53FB399F5DD3CFF /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				45F54A8769543B8FD761793C /* KLMSClient.swift */,
-				6964580D8C84C55B8D14C6B7 /* RemindersService.swift */,
-				7C478E138A6A7730AC413114 /* SchedulerService.swift */,
-				829D5E899148E74DC6DE1C2A /* SyncCoordinator.swift */,
+				4F88721392E2384BBE2C92AC /* KLMSClient.swift */,
+				EE72F9040045A63FFE9F00FE /* RemindersService.swift */,
+				B8DACAF8011E1B9E48ADBC5E /* SchedulerService.swift */,
+				CD0FE8D93934934B81D4E769 /* SyncCoordinator.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		20E0E7E0AF0245DA3257688E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				7D0DC131E9013FF50BFA59D7 /* MenuBarView.swift */,
+				3FB7ECFAE2613067532E0BA1 /* SettingsView.swift */,
+				86A619BE57A8D89C97ADA007 /* StatusItemManager.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 		845B402AED07C72732770A79 = {
@@ -109,15 +85,51 @@
 		B4D67239709FFA1996C62A5F /* KLMS-to-Todo */ = {
 			isa = PBXGroup;
 			children = (
-				09F68B83A2853644C734A706 /* Info.plist */,
-				DE1F71DE3926FC554A6978C4 /* KLMS-to-Todo.entitlements */,
-				187222F4AB76EE2BE86879C3 /* App */,
-				292828F6F0DA1148A5FA9DB4 /* Models */,
-				6460D76BD53FB399F5DD3CFF /* Services */,
-				12D5BBD880A98B8DABA583DD /* Storage */,
-				1B9336961970970D2DA01663 /* UI */,
+				6BC4B7BFF77B5B4F6D11A348 /* KLMS-to-Todo.xcodeproj */,
+				C3C83CA67D7FAF8802056FA5 /* klms-swift-src */,
 			);
 			path = "KLMS-to-Todo";
+			sourceTree = "<group>";
+		};
+		B98DA3E52127C58EFCD8E690 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C43EDF3C9AFF23ECC4DE43BF /* Assignment.swift */,
+				5FAD1C7EFAF7F60723CDFBE7 /* SyncResult.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C3C83CA67D7FAF8802056FA5 /* klms-swift-src */ = {
+			isa = PBXGroup;
+			children = (
+				9AD016C6A4146B6442F07E6C /* Info.plist */,
+				A0C612FB1CD1EF92431C1466 /* KLMS-to-Todo.entitlements */,
+				D9BD6B1A8500309F745CF9F7 /* App */,
+				B98DA3E52127C58EFCD8E690 /* Models */,
+				1E87BE465C985C65E196E2A3 /* Services */,
+				C724CB977F7C8224BF8B5D44 /* Storage */,
+				20E0E7E0AF0245DA3257688E /* UI */,
+			);
+			path = "klms-swift-src";
+			sourceTree = "<group>";
+		};
+		C724CB977F7C8224BF8B5D44 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				A35A66B7D56389C689007203 /* AppSettings.swift */,
+				FB1064A73360F56F50DA77A6 /* KeychainHelper.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		D9BD6B1A8500309F745CF9F7 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				4FFD131A8542782F72E6B1DE /* AppDelegate.swift */,
+				C89F6B9199F75BE2DE6D7AEC /* KLMS_to_TodoApp.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,6 +140,7 @@
 			buildConfigurationList = 6F94A96244A5CC5C93BA15AE /* Build configuration list for PBXNativeTarget "KLMS-to-Todo" */;
 			buildPhases = (
 				86FB6819BC88D6C8E702E588 /* Sources */,
+				1E89DC6E9D6EC6FF4D80E0B4 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -174,24 +187,36 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		1E89DC6E9D6EC6FF4D80E0B4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B562A81F8235DEC3E971FD8 /* Info.plist in Resources */,
+				B5179C045C0041F929C427F0 /* KLMS-to-Todo.xcodeproj in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		86FB6819BC88D6C8E702E588 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79971533D7752D07375E7739 /* AppDelegate.swift in Sources */,
-				4BF34A0DFB53C224DBCC3968 /* AppSettings.swift in Sources */,
-				0E4F7856639E75A30B48AC57 /* Assignment.swift in Sources */,
-				DF3E4712FEC0996D68DF687E /* KLMSClient.swift in Sources */,
-				6AC19E203617F83828D74212 /* KLMS_to_TodoApp.swift in Sources */,
-				DAE739F4095F779F0579E001 /* KeychainHelper.swift in Sources */,
-				F07CAF04BDD987A2F6B2F5F9 /* MenuBarView.swift in Sources */,
-				64E550DFC9455F8DEB912507 /* RemindersService.swift in Sources */,
-				8334198C5E65BCECA46B5EFD /* SchedulerService.swift in Sources */,
-				963323ED62520DD65935E83D /* SettingsView.swift in Sources */,
-				8F175EAF3F756514A87D1A87 /* StatusItemManager.swift in Sources */,
-				4D6F7A323E5AFD6C09CE95C1 /* SyncCoordinator.swift in Sources */,
-				F6D38D9473CCF3A7900E50F4 /* SyncResult.swift in Sources */,
+				265ACC1B59DBA328E845CA78 /* AppDelegate.swift in Sources */,
+				7D1050E03EB97FA9BCAD52F2 /* AppSettings.swift in Sources */,
+				14BDB6F91656668D3694D63D /* Assignment.swift in Sources */,
+				666831C61103857A0C946EB1 /* KLMSClient.swift in Sources */,
+				308202EA1855CCCFB1880A6F /* KLMS_to_TodoApp.swift in Sources */,
+				4E12ED757A4E5A03EEA0DCE2 /* KeychainHelper.swift in Sources */,
+				400276B677B3404A9994DD04 /* MenuBarView.swift in Sources */,
+				77E6AE7DDB4791B68403DAC9 /* RemindersService.swift in Sources */,
+				1AD02D7C245314112A3061DE /* SchedulerService.swift in Sources */,
+				678221EA60E4EDDA294E4BC8 /* SettingsView.swift in Sources */,
+				87D8A9189F38BD4DCD261278 /* StatusItemManager.swift in Sources */,
+				AE8A9B654A1EEC0D7B2F9532 /* SyncCoordinator.swift in Sources */,
+				23B6A1A649698C94ED0223E1 /* SyncResult.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

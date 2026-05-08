@@ -1,14 +1,19 @@
-.env
+# Swift / Xcode
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+.build/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python（削除済みだが念のため）
 .venv/
 __pycache__/
 *.pyc
 *.log
 
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Xcode
-KLMS-to-Todo/*.xcodeproj/xcuserdata/
-KLMS-to-Todo/*.xcodeproj/project.xcworkspace/xcuserdata/
-KLMS-to-Todo/DerivedData/
+# 認証情報
+.env

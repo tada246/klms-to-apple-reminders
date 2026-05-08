@@ -1,0 +1,380 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0E4F7856639E75A30B48AC57 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF44EE4ADA6EACA068BD4073 /* Assignment.swift */; };
+		4BF34A0DFB53C224DBCC3968 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9E76104226F39C76CCEC22 /* AppSettings.swift */; };
+		4D6F7A323E5AFD6C09CE95C1 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829D5E899148E74DC6DE1C2A /* SyncCoordinator.swift */; };
+		64E550DFC9455F8DEB912507 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6964580D8C84C55B8D14C6B7 /* RemindersService.swift */; };
+		6AC19E203617F83828D74212 /* KLMS_to_TodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2191A0CDD8CD20FF9C5014A0 /* KLMS_to_TodoApp.swift */; };
+		79971533D7752D07375E7739 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415A77B6362FDE583E23ECF /* AppDelegate.swift */; };
+		8334198C5E65BCECA46B5EFD /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C478E138A6A7730AC413114 /* SchedulerService.swift */; };
+		8F175EAF3F756514A87D1A87 /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F4FB7AD5CE20C1EC1D43DA /* StatusItemManager.swift */; };
+		963323ED62520DD65935E83D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3349D8AAC2263D750CB9435C /* SettingsView.swift */; };
+		DAE739F4095F779F0579E001 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06A6316E5EA8700959F4BA1 /* KeychainHelper.swift */; };
+		DF3E4712FEC0996D68DF687E /* KLMSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F54A8769543B8FD761793C /* KLMSClient.swift */; };
+		F07CAF04BDD987A2F6B2F5F9 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705208C75BBB9613B669139D /* MenuBarView.swift */; };
+		F6D38D9473CCF3A7900E50F4 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D037C425E4E4A5C86FA43 /* SyncResult.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		05F4FB7AD5CE20C1EC1D43DA /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
+		09F68B83A2853644C734A706 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		2191A0CDD8CD20FF9C5014A0 /* KLMS_to_TodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMS_to_TodoApp.swift; sourceTree = "<group>"; };
+		3349D8AAC2263D750CB9435C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		45F54A8769543B8FD761793C /* KLMSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSClient.swift; sourceTree = "<group>"; };
+		6964580D8C84C55B8D14C6B7 /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
+		705208C75BBB9613B669139D /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		7C478E138A6A7730AC413114 /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
+		829D5E899148E74DC6DE1C2A /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
+		9455B6F0A49C766C8EFE201D /* KLMS-to-Todo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KLMS-to-Todo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A06A6316E5EA8700959F4BA1 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		AD9E76104226F39C76CCEC22 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		B415A77B6362FDE583E23ECF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BF44EE4ADA6EACA068BD4073 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
+		DE1F71DE3926FC554A6978C4 /* KLMS-to-Todo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "KLMS-to-Todo.entitlements"; sourceTree = "<group>"; };
+		EC1D037C425E4E4A5C86FA43 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		12D5BBD880A98B8DABA583DD /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				AD9E76104226F39C76CCEC22 /* AppSettings.swift */,
+				A06A6316E5EA8700959F4BA1 /* KeychainHelper.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		187222F4AB76EE2BE86879C3 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B415A77B6362FDE583E23ECF /* AppDelegate.swift */,
+				2191A0CDD8CD20FF9C5014A0 /* KLMS_to_TodoApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		1B9336961970970D2DA01663 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				705208C75BBB9613B669139D /* MenuBarView.swift */,
+				3349D8AAC2263D750CB9435C /* SettingsView.swift */,
+				05F4FB7AD5CE20C1EC1D43DA /* StatusItemManager.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		292828F6F0DA1148A5FA9DB4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BF44EE4ADA6EACA068BD4073 /* Assignment.swift */,
+				EC1D037C425E4E4A5C86FA43 /* SyncResult.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6460D76BD53FB399F5DD3CFF /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				45F54A8769543B8FD761793C /* KLMSClient.swift */,
+				6964580D8C84C55B8D14C6B7 /* RemindersService.swift */,
+				7C478E138A6A7730AC413114 /* SchedulerService.swift */,
+				829D5E899148E74DC6DE1C2A /* SyncCoordinator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		845B402AED07C72732770A79 = {
+			isa = PBXGroup;
+			children = (
+				B4D67239709FFA1996C62A5F /* KLMS-to-Todo */,
+				97365EF958967FD6B8F7AD9B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		97365EF958967FD6B8F7AD9B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9455B6F0A49C766C8EFE201D /* KLMS-to-Todo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B4D67239709FFA1996C62A5F /* KLMS-to-Todo */ = {
+			isa = PBXGroup;
+			children = (
+				09F68B83A2853644C734A706 /* Info.plist */,
+				DE1F71DE3926FC554A6978C4 /* KLMS-to-Todo.entitlements */,
+				187222F4AB76EE2BE86879C3 /* App */,
+				292828F6F0DA1148A5FA9DB4 /* Models */,
+				6460D76BD53FB399F5DD3CFF /* Services */,
+				12D5BBD880A98B8DABA583DD /* Storage */,
+				1B9336961970970D2DA01663 /* UI */,
+			);
+			path = "KLMS-to-Todo";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		648485F09E876D7622E081DD /* KLMS-to-Todo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F94A96244A5CC5C93BA15AE /* Build configuration list for PBXNativeTarget "KLMS-to-Todo" */;
+			buildPhases = (
+				86FB6819BC88D6C8E702E588 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "KLMS-to-Todo";
+			packageProductDependencies = (
+			);
+			productName = "KLMS-to-Todo";
+			productReference = 9455B6F0A49C766C8EFE201D /* KLMS-to-Todo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		92C390CD4E26FB272506ACB3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					648485F09E876D7622E081DD = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 90BF4B91BB3668EA0DCE19F2 /* Build configuration list for PBXProject "KLMS-to-Todo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 845B402AED07C72732770A79;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 97365EF958967FD6B8F7AD9B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				648485F09E876D7622E081DD /* KLMS-to-Todo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		86FB6819BC88D6C8E702E588 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79971533D7752D07375E7739 /* AppDelegate.swift in Sources */,
+				4BF34A0DFB53C224DBCC3968 /* AppSettings.swift in Sources */,
+				0E4F7856639E75A30B48AC57 /* Assignment.swift in Sources */,
+				DF3E4712FEC0996D68DF687E /* KLMSClient.swift in Sources */,
+				6AC19E203617F83828D74212 /* KLMS_to_TodoApp.swift in Sources */,
+				DAE739F4095F779F0579E001 /* KeychainHelper.swift in Sources */,
+				F07CAF04BDD987A2F6B2F5F9 /* MenuBarView.swift in Sources */,
+				64E550DFC9455F8DEB912507 /* RemindersService.swift in Sources */,
+				8334198C5E65BCECA46B5EFD /* SchedulerService.swift in Sources */,
+				963323ED62520DD65935E83D /* SettingsView.swift in Sources */,
+				8F175EAF3F756514A87D1A87 /* StatusItemManager.swift in Sources */,
+				4D6F7A323E5AFD6C09CE95C1 /* SyncCoordinator.swift in Sources */,
+				F6D38D9473CCF3A7900E50F4 /* SyncResult.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3D18A9A35715B9F22943849C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.keio.klms-to-todo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		6A905AC477B03A794A49A599 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "KLMS-to-Todo/KLMS-to-Todo.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "KLMS-to-Todo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A00A4ECAEBE1B825CD8CF99B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.keio.klms-to-todo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		B397231963A5E758871345AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "KLMS-to-Todo/KLMS-to-Todo.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "KLMS-to-Todo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6F94A96244A5CC5C93BA15AE /* Build configuration list for PBXNativeTarget "KLMS-to-Todo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B397231963A5E758871345AA /* Debug */,
+				6A905AC477B03A794A49A599 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		90BF4B91BB3668EA0DCE19F2 /* Build configuration list for PBXProject "KLMS-to-Todo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D18A9A35715B9F22943849C /* Debug */,
+				A00A4ECAEBE1B825CD8CF99B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 92C390CD4E26FB272506ACB3 /* Project object */;
+}

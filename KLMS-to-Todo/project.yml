@@ -1,0 +1,26 @@
+name: KLMS-to-Todo
+options:
+  bundleIdPrefix: jp.keio
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15"
+
+settings:
+  base:
+    PRODUCT_BUNDLE_IDENTIFIER: jp.keio.klms-to-todo
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  KLMS-to-Todo:
+    type: application
+    platform: macOS
+    sources:
+      - path: KLMS-to-Todo
+    settings:
+      base:
+        INFOPLIST_FILE: KLMS-to-Todo/Info.plist
+        CODE_SIGN_ENTITLEMENTS: KLMS-to-Todo/KLMS-to-Todo.entitlements
+    dependencies: []

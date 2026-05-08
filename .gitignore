@@ -7,3 +7,8 @@ __pycache__/
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Xcode
+KLMS-to-Todo/*.xcodeproj/xcuserdata/
+KLMS-to-Todo/*.xcodeproj/project.xcworkspace/xcuserdata/
+KLMS-to-Todo/DerivedData/

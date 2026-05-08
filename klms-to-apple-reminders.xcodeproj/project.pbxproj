@@ -1,0 +1,380 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396A859A64078B70C5F5E32 /* AppSettings.swift */; };
+		68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */; };
+		7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */; };
+		864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502DCFA91C698135978CAFB /* RemindersService.swift */; };
+		8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */; };
+		971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9426FE520EAE131785044B /* SyncCoordinator.swift */; };
+		CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818DFB44D6DF41D8C5628EB9 /* Assignment.swift */; };
+		D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2A049CFADEADDDACFB512 /* SettingsView.swift */; };
+		D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */; };
+		EBF27D4AA43D0B72776CA2E9 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050C502AB04744DA84179076 /* MenuBarView.swift */; };
+		ED3B8D25B930A45895E8A931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9905C9D28C544F863FA867D3 /* AppDelegate.swift */; };
+		F86D385F6ACD69BCD77EB4C8 /* KLMSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */; };
+		FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		050C502AB04744DA84179076 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		1396A859A64078B70C5F5E32 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		14C6157C5622A646BACC8BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		23E2A049CFADEADDDACFB512 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "klms-to-apple-reminders.entitlements"; sourceTree = "<group>"; };
+		2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSClient.swift; sourceTree = "<group>"; };
+		3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSToAppleRemindersApp.swift; sourceTree = "<group>"; };
+		5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
+		5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
+		61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		6502DCFA91C698135978CAFB /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
+		818DFB44D6DF41D8C5628EB9 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
+		9905C9D28C544F863FA867D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AF9426FE520EAE131785044B /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
+		B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+		E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klms-to-apple-reminders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		09A1D1BB6D550AAE5BC3F756 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2D6C707AC6EE896E9007C616 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				050C502AB04744DA84179076 /* MenuBarView.swift */,
+				23E2A049CFADEADDDACFB512 /* SettingsView.swift */,
+				5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		344F6CBD42ECA2555754CD7E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				818DFB44D6DF41D8C5628EB9 /* Assignment.swift */,
+				B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */ = {
+			isa = PBXGroup;
+			children = (
+				14C6157C5622A646BACC8BE7 /* Info.plist */,
+				2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */,
+				F1B3BEC41909CB57A574B2E0 /* App */,
+				344F6CBD42ECA2555754CD7E /* Models */,
+				66DCBB7A7F2AEFBB75BDD2A0 /* Services */,
+				D28DAEE5F9FFA46C15BBDCF4 /* Storage */,
+				2D6C707AC6EE896E9007C616 /* UI */,
+			);
+			path = "klms-to-apple-reminders";
+			sourceTree = "<group>";
+		};
+		66DCBB7A7F2AEFBB75BDD2A0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */,
+				6502DCFA91C698135978CAFB /* RemindersService.swift */,
+				5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */,
+				AF9426FE520EAE131785044B /* SyncCoordinator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		B8CFF15F0782372782A2FE48 = {
+			isa = PBXGroup;
+			children = (
+				501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */,
+				09A1D1BB6D550AAE5BC3F756 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D28DAEE5F9FFA46C15BBDCF4 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				1396A859A64078B70C5F5E32 /* AppSettings.swift */,
+				61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		F1B3BEC41909CB57A574B2E0 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9905C9D28C544F863FA867D3 /* AppDelegate.swift */,
+				3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		971B13D380BDCB5CDB36DFA0 /* klms-to-apple-reminders */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */;
+			buildPhases = (
+				CCADCB377F75423BF13EEE6A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "klms-to-apple-reminders";
+			packageProductDependencies = (
+			);
+			productName = "klms-to-apple-reminders";
+			productReference = E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AC402B5BA082C5B524E99A9E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					971B13D380BDCB5CDB36DFA0 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = DC5EF9EE1B887AF39FCFD11F /* Build configuration list for PBXProject "klms-to-apple-reminders" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = B8CFF15F0782372782A2FE48;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 09A1D1BB6D550AAE5BC3F756 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				971B13D380BDCB5CDB36DFA0 /* klms-to-apple-reminders */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CCADCB377F75423BF13EEE6A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3B8D25B930A45895E8A931 /* AppDelegate.swift in Sources */,
+				2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */,
+				CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */,
+				F86D385F6ACD69BCD77EB4C8 /* KLMSClient.swift in Sources */,
+				FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */,
+				D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */,
+				EBF27D4AA43D0B72776CA2E9 /* MenuBarView.swift in Sources */,
+				864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */,
+				68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */,
+				D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */,
+				7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */,
+				971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */,
+				8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1B066F72CFCB33FDFBF7878F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.keio.klms-to-apple-reminders";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		826CC9190E3DA082EA7A1B3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.keio.klms-to-apple-reminders";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		CCF9EFF76ADEC97AB92289A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "klms-to-apple-reminders/klms-to-apple-reminders.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "klms-to-apple-reminders/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FF1399FB81390E587A8EC5F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "klms-to-apple-reminders/klms-to-apple-reminders.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "klms-to-apple-reminders/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF1399FB81390E587A8EC5F2 /* Debug */,
+				CCF9EFF76ADEC97AB92289A7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DC5EF9EE1B887AF39FCFD11F /* Build configuration list for PBXProject "klms-to-apple-reminders" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				826CC9190E3DA082EA7A1B3F /* Debug */,
+				1B066F72CFCB33FDFBF7878F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AC402B5BA082C5B524E99A9E /* Project object */;
+}

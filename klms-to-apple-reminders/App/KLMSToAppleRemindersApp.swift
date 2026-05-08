@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct KLMSToTodoApp: App {
+struct KLMSToAppleRemindersApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

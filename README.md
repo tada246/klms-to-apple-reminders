@@ -1,78 +1,84 @@
-# klms-to-todo
+# klms-to-apple-reminders
 
-慶應義塾大学の K-LMS（Canvas LMS）から課題を取得して、Apple Reminders に自動追加するツール。
+慶應義塾大学の K-LMS（Canvas LMS）から課題を取得して、Apple Reminders に自動追加する macOS メニューバーアプリ。
 
 > MFAが毎回必要なK-LMSのログインを、APIトークン一度の発行で解決します。
 
 ## 仕組み
 
 ```
-K-LMS (Canvas API) → Python スクリプト → Apple Reminders
+K-LMS (Canvas API) → Swift macOS アプリ → EventKit → Apple Reminders
 ```
 
 - APIトークンを一度発行すれば、以後 MFA なしで課題一覧を取得
 - 提出済み・重複した課題はスキップ
-- 毎朝 launchd で自動実行可能（macOS）
+- メニューバーから手動同期 or 自動スケジュール実行に対応
+- トークンは macOS Keychain に安全に保存
 
 ## セットアップ
 
-### 1. リポジトリをクローン
-
-```bash
-git clone https://github.com/<your-username>/klms-to-todo.git
-cd klms-to-todo
-bash setup.sh
-```
-
-### 2. APIトークンを発行
+### 1. APIトークンを発行
 
 1. [https://lms.keio.jp/profile/settings](https://lms.keio.jp/profile/settings) を開く
 2. **「Approved Integrations」** セクションへスクロール
 3. **「+ New Access Token」** をクリック
-4. 目的を入力（例: `klms-to-todo`）して生成
+4. 目的を入力（例: `klms-to-apple-reminders`）して生成
 5. 表示されたトークンをコピー（再表示不可）
 
-### 3. .env を編集
+### 2. ビルド & 実行
+
+Xcode でプロジェクトを開いてビルドします。
 
 ```bash
-# .env
-KLMS_API_TOKEN=your_token_here
-REMINDERS_LIST=慶應課題   # Reminders に作成するリスト名
-DAYS_AHEAD=30              # 何日先まで取得するか
+open klms-to-apple-reminders.xcodeproj
 ```
 
-### 4. 実行
+または [XcodeGen](https://github.com/yonaskolb/XcodeGen) を使用している場合:
 
 ```bash
-source .venv/bin/activate
-python main.py
+xcodegen generate
+open klms-to-apple-reminders.xcodeproj
 ```
 
-初回実行時、macOS が Reminders へのアクセス許可を求めます。**「OK」** をクリックしてください。
+### 3. 初回設定
 
-### 5. 毎朝8時に自動実行（オプション）
-
-```bash
-bash setup_launchd.sh
-```
+1. アプリを起動するとメニューバーにアイコンが表示される
+2. アイコンをクリック → **「設定」** を開く
+3. APIトークンを入力して保存
+4. Reminders へのアクセス許可を求めるダイアログで **「OK」** をクリック
+5. **「今すぐ同期」** で動作確認
 
 ## ファイル構成
 
 ```
-klms-to-todo/
-├── main.py           # エントリーポイント
-├── canvas_client.py  # Canvas API クライアント
-├── reminders.py      # Apple Reminders 連携（osascript）
-├── setup.sh          # 初期セットアップ
-├── setup_launchd.sh  # macOS 自動実行設定
-├── requirements.txt
-└── .env.example
+klms-to-apple-reminders/
+├── App/
+│   ├── KLMSToAppleRemindersApp.swift  # アプリエントリーポイント
+│   └── AppDelegate.swift              # AppDelegate
+├── Models/
+│   ├── Assignment.swift               # 課題モデル
+│   └── SyncResult.swift               # 同期結果モデル
+├── Services/
+│   ├── KLMSClient.swift               # Canvas API クライアント
+│   ├── RemindersService.swift         # EventKit (Apple Reminders) 連携
+│   ├── SchedulerService.swift         # 自動同期スケジューラ
+│   └── SyncCoordinator.swift          # 同期処理の統括
+├── Storage/
+│   ├── AppSettings.swift              # アプリ設定 (UserDefaults)
+│   └── KeychainHelper.swift           # トークンの安全な保存 (Keychain)
+├── UI/
+│   ├── MenuBarView.swift              # メニューバー UI
+│   ├── SettingsView.swift             # 設定画面
+│   └── StatusItemManager.swift        # メニューバーアイコン管理
+├── Info.plist
+├── klms-to-apple-reminders.entitlements
+└── klms-to-apple-reminders.xcodeproj/
 ```
 
 ## 動作環境
 
-- macOS 12 以上（Apple Reminders が必要）
-- Python 3.11 以上
+- macOS 13 (Ventura) 以上
+- Xcode 15 以上
 - K-LMS（慶應義塾大学）のアカウント
 
 ## よくある質問
@@ -81,10 +87,13 @@ klms-to-todo/
 Canvas のデフォルトでは有効期限なし。K-LMS の設定によっては期限が設けられている場合があります。切れた場合は再発行してください。
 
 **Q: K-Pass と共存できる？**
-できます。このツールは Canvas API を使うのみで、K-Pass の動作には影響しません。
+できます。このアプリは Canvas API を使うのみで、K-Pass の動作には影響しません。
 
 **Q: 課題が取得できない**
-トークンが正しいか確認してください。また、Keio の VPN 接続が必要な場合があります。
+設定画面でトークンが正しく入力されているか確認してください。また、Keio の VPN 接続が必要な場合があります。
+
+**Q: Reminders のリスト名を変えたい**
+設定画面から Reminders リスト名を変更できます。
 
 ## ライセンス
 

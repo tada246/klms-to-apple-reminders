@@ -8,10 +8,21 @@ enum KLMSError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidToken:       return "APIトークンが無効です。設定から再発行してください。"
-        case .networkError(let e): return "接続エラー: \(e.localizedDescription)"
-        case .decodingError(let e): return "データ解析エラー: \(e.localizedDescription)"
-        case .httpError(let code): return "HTTPエラー: \(code)"
+        case .invalidToken:
+            return "トークンが無効または期限切れです。設定画面から再発行してください。"
+        case .networkError:
+            return "ネットワークに接続できません。インターネット接続を確認してください。"
+        case .decodingError:
+            return "K-LMSのデータ形式を読み込めませんでした。時間をおいて再試行してください。"
+        case .httpError(let code):
+            switch code {
+            case 401: return "認証エラー(401): トークンが無効または期限切れです。再発行してください。"
+            case 403: return "アクセス拒否(403): このリソースへのアクセス権限がありません。"
+            case 404: return "見つかりません(404): K-LMSのAPIエンドポイントが存在しません。"
+            case 429: return "リクエスト過多(429): しばらく待ってから再試行してください。"
+            case 500...599: return "K-LMSサーバーエラー(\(code)): しばらく待ってから再試行してください。"
+            default:  return "通信エラー(\(code)): しばらく待ってから再試行してください。"
+            }
         }
     }
 }

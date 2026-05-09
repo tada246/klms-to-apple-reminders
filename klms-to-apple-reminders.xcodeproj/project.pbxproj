@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		201054C8E6F5C2BD3D74BC81 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */; };
+		20BB04F34DB08F5C5D4C29BD /* TokenValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */; };
 		2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396A859A64078B70C5F5E32 /* AppSettings.swift */; };
 		68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */; };
 		7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */; };
@@ -24,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		050C502AB04744DA84179076 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		1396A859A64078B70C5F5E32 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		14C6157C5622A646BACC8BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		23E2A049CFADEADDDACFB512 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -38,6 +41,7 @@
 		9905C9D28C544F863FA867D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF9426FE520EAE131785044B /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
 		B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+		E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidator.swift; sourceTree = "<group>"; };
 		E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klms-to-apple-reminders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -54,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				050C502AB04744DA84179076 /* MenuBarView.swift */,
+				08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */,
 				23E2A049CFADEADDDACFB512 /* SettingsView.swift */,
 				5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */,
 			);
@@ -107,6 +112,7 @@
 			children = (
 				1396A859A64078B70C5F5E32 /* AppSettings.swift */,
 				61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */,
+				E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -186,12 +192,14 @@
 				FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */,
 				D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */,
 				EBF27D4AA43D0B72776CA2E9 /* MenuBarView.swift in Sources */,
+				201054C8E6F5C2BD3D74BC81 /* OnboardingView.swift in Sources */,
 				864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */,
 				68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */,
 				D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */,
 				7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */,
 				971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */,
 				8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */,
+				20BB04F34DB08F5C5D4C29BD /* TokenValidator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

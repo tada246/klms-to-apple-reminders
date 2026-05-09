@@ -32,7 +32,7 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 4) {
             if coordinator.isSyncing {
                 HStack(spacing: 6) {
-                    ProgressView().scaleEffect(0.7)
+                    ProgressView().controlSize(.small)
                     Text("同期中...").font(.caption).foregroundColor(.secondary)
                 }
             } else if let error = coordinator.lastError {
@@ -66,13 +66,13 @@ struct MenuBarView: View {
 
             Divider().padding(.vertical, 2)
 
-            menuButton(title: "終了", icon: "power") {
+            menuButton(title: "終了", icon: "power", foregroundColor: .red) {
                 NSApp.terminate(nil)
             }
         }
     }
 
-    private func menuButton(title: String, icon: String, action: @escaping () -> Void) -> some View {
+    private func menuButton(title: String, icon: String, foregroundColor: Color = .primary, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Image(systemName: icon).frame(width: 16)
@@ -82,6 +82,7 @@ struct MenuBarView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .foregroundColor(foregroundColor)
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
         .background(Color.clear)

@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 enum KeychainHelper {
-    private static let service = "jp.keio.klms-to-apple-reminders"
+    private static let service = "io.github.tada246.klms-to-apple-reminders"
     private static let account = "api-token"
 
     static func save(_ token: String) throws {

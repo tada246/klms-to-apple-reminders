@@ -105,16 +105,16 @@ klms-to-apple-reminders/
 ```bash
 # オンボーディングのみリセット
 plutil -replace hasCompletedOnboarding -bool NO \
-  ~/Library/Preferences/jp.keio.klms-to-apple-reminders.plist
+  ~/Library/Preferences/io.github.tada246.klms-to-apple-reminders.plist
 
 # 全設定をリセット
-rm ~/Library/Preferences/jp.keio.klms-to-apple-reminders.plist
+rm ~/Library/Preferences/io.github.tada246.klms-to-apple-reminders.plist
 
 # APIトークンを削除
-security delete-generic-password -s "jp.keio.klms-to-apple-reminders"
+security delete-generic-password -s "io.github.tada246.klms-to-apple-reminders"
 
 # リマインダー権限をリセット
-tccutil reset Reminders jp.keio.klms-to-apple-reminders
+tccutil reset Reminders io.github.tada246.klms-to-apple-reminders
 ```
 
 ## よくある質問

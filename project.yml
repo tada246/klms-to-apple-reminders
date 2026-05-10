@@ -1,13 +1,13 @@
 name: klms-to-apple-reminders
 options:
-  bundleIdPrefix: jp.keio
+  bundleIdPrefix: io.github.tada246
   deploymentTarget:
     macOS: "13.0"
   xcodeVersion: "15"
 
 settings:
   base:
-    PRODUCT_BUNDLE_IDENTIFIER: jp.keio.klms-to-apple-reminders
+    PRODUCT_BUNDLE_IDENTIFIER: io.github.tada246.klms-to-apple-reminders
     SWIFT_VERSION: "5.9"
     MACOSX_DEPLOYMENT_TARGET: "13.0"
     CODE_SIGN_STYLE: Automatic

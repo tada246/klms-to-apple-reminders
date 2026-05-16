@@ -78,6 +78,12 @@ struct KLMSClient {
                 let items = try decoder.decode([PlannerItem].self, from: data)
                 allItems.append(contentsOf: items)
             } catch {
+                #if DEBUG
+                print("[KLMSClient] decode failed: \(error)")
+                if let str = String(data: data, encoding: .utf8) {
+                    print("[KLMSClient] raw JSON (first 500): \(str.prefix(500))")
+                }
+                #endif
                 throw KLMSError.decodingError(error)
             }
         }
@@ -108,13 +114,13 @@ private struct PlannerItem: Decodable {
     let plannableId: Int
     let contextName: String?
     let htmlUrl: String?
-    let plannable: Plannable
+    let plannable: Plannable?
     let submissions: Submissions?
     let plannableDate: String?
 
     var toAssignment: Assignment? {
         guard plannableType == "assignment" || plannableType == "quiz" else { return nil }
-        let dueString = plannable.dueAt ?? plannableDate
+        let dueString = plannable?.dueAt ?? plannableDate
         let dueAt = dueString.flatMap { ISO8601DateFormatter().date(from: $0) }
 
         var fullURL: URL?
@@ -125,7 +131,7 @@ private struct PlannerItem: Decodable {
 
         return Assignment(
             id: "\(plannableType)_\(plannableId)",
-            title: plannable.title ?? "（タイトル不明）",
+            title: plannable?.title ?? "（タイトル不明）",
             courseName: contextName ?? "",
             dueAt: dueAt,
             url: fullURL,
@@ -140,7 +146,22 @@ private struct Plannable: Decodable {
 }
 
 private struct Submissions: Decodable {
-    let submitted: Bool?
+    let submitted: Bool
+
+    // Canvas API returns either the boolean `false` (no submission possible)
+    // or an object like {"submitted": true, "graded": false, ...}.
+    // Standard JSONDecoder cannot handle this polymorphism, so we decode manually.
+    init(from decoder: Decoder) throws {
+        if let single = try? decoder.singleValueContainer(),
+           let boolVal = try? single.decode(Bool.self) {
+            submitted = boolVal
+            return
+        }
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        submitted = (try? container.decode(Bool.self, forKey: .submitted)) ?? false
+    }
+
+    enum CodingKeys: String, CodingKey { case submitted }
 }
 
 private extension String {

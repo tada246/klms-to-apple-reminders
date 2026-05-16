@@ -15,6 +15,8 @@
 		864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502DCFA91C698135978CAFB /* RemindersService.swift */; };
 		8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */; };
 		971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9426FE520EAE131785044B /* SyncCoordinator.swift */; };
+		AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6641E190882834685560A13E /* KeychainHelperTests.swift */; };
+		C3ADDD32591C823D33CDE08C /* TokenValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */; };
 		CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818DFB44D6DF41D8C5628EB9 /* Assignment.swift */; };
 		D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2A049CFADEADDDACFB512 /* SettingsView.swift */; };
 		D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */; };
@@ -23,6 +25,16 @@
 		F86D385F6ACD69BCD77EB4C8 /* KLMSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */; };
 		FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DEAEB5DAED4B9751B43AB462 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AC402B5BA082C5B524E99A9E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 971B13D380BDCB5CDB36DFA0;
+			remoteInfo = "klms-to-apple-reminders";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		050C502AB04744DA84179076 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
@@ -37,12 +49,15 @@
 		5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
 		61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		6502DCFA91C698135978CAFB /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
+		6641E190882834685560A13E /* KeychainHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
 		818DFB44D6DF41D8C5628EB9 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
 		9905C9D28C544F863FA867D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF9426FE520EAE131785044B /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
 		B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+		DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidatorTests.swift; sourceTree = "<group>"; };
 		E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidator.swift; sourceTree = "<group>"; };
 		E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klms-to-apple-reminders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9DAA67BD1A554AC8447F39D /* klms-to-apple-remindersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "klms-to-apple-remindersTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -50,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */,
+				F9DAA67BD1A554AC8447F39D /* klms-to-apple-remindersTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,6 +88,15 @@
 				B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		3BC1D91CC53F784F6DCFC1BA /* klms-to-apple-remindersTests */ = {
+			isa = PBXGroup;
+			children = (
+				6641E190882834685560A13E /* KeychainHelperTests.swift */,
+				DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */,
+			);
+			path = "klms-to-apple-remindersTests";
 			sourceTree = "<group>";
 		};
 		501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */ = {
@@ -103,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */,
+				3BC1D91CC53F784F6DCFC1BA /* klms-to-apple-remindersTests */,
 				09A1D1BB6D550AAE5BC3F756 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -129,6 +155,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		098517183D6FB4BEE18FACEA /* klms-to-apple-remindersTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29599E87E3F28DD9514A97A9 /* Build configuration list for PBXNativeTarget "klms-to-apple-remindersTests" */;
+			buildPhases = (
+				FE3213E3E53B4BC2A0817CE8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECC2AE594923C36A17AD95B8 /* PBXTargetDependency */,
+			);
+			name = "klms-to-apple-remindersTests";
+			packageProductDependencies = (
+			);
+			productName = "klms-to-apple-remindersTests";
+			productReference = F9DAA67BD1A554AC8447F39D /* klms-to-apple-remindersTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		971B13D380BDCB5CDB36DFA0 /* klms-to-apple-reminders */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */;
@@ -155,6 +199,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					098517183D6FB4BEE18FACEA = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					971B13D380BDCB5CDB36DFA0 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -176,6 +224,7 @@
 			projectRoot = "";
 			targets = (
 				971B13D380BDCB5CDB36DFA0 /* klms-to-apple-reminders */,
+				098517183D6FB4BEE18FACEA /* klms-to-apple-remindersTests */,
 			);
 		};
 /* End PBXProject section */
@@ -203,9 +252,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FE3213E3E53B4BC2A0817CE8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */,
+				C3ADDD32591C823D33CDE08C /* TokenValidatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		ECC2AE594923C36A17AD95B8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 971B13D380BDCB5CDB36DFA0 /* klms-to-apple-reminders */;
+			targetProxy = DEAEB5DAED4B9751B43AB462 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		01E1F3B1FE7A37DC54BA931A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.github.tada246.klms-to-apple-remindersTests";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/klms-to-apple-reminders.app/Contents/MacOS/klms-to-apple-reminders";
+			};
+			name = Debug;
+		};
 		1B066F72CFCB33FDFBF7878F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -331,6 +414,23 @@
 			};
 			name = Debug;
 		};
+		C16E2866D09E018456E64A84 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.github.tada246.klms-to-apple-remindersTests";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/klms-to-apple-reminders.app/Contents/MacOS/klms-to-apple-reminders";
+			};
+			name = Release;
+		};
 		CCF9EFF76ADEC97AB92289A7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -364,6 +464,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		29599E87E3F28DD9514A97A9 /* Build configuration list for PBXNativeTarget "klms-to-apple-remindersTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01E1F3B1FE7A37DC54BA931A /* Debug */,
+				C16E2866D09E018456E64A84 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

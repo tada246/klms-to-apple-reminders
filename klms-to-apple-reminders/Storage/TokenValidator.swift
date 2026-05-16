@@ -4,7 +4,9 @@ enum TokenValidator {
     /// 英大小文字・数字のみ許可（スペース・記号は不可）
     static func isValid(_ token: String) -> Bool {
         guard !token.isEmpty else { return false }
-        return token.unicodeScalars.allSatisfy { CharacterSet.alphanumerics.contains($0) }
+        // ASCII英数字のみ許可（Unicode文字・日本語・記号・スペースは不可）
+        let allowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        return token.unicodeScalars.allSatisfy { allowed.contains($0) }
     }
 
     static var invalidMessage: String {

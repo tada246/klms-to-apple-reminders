@@ -3,22 +3,53 @@ import Security
 
 enum KeychainHelper {
     private static let service = "io.github.tada246.klms-to-apple-reminders"
-    private static let account = "api-token"
+    private static let tokenAccount  = "api-token"
+    private static let cookieAccount = "canvas-session"
+
+    // MARK: - API Token
 
     static func save(_ token: String) throws {
-        let data = Data(token.utf8)
+        try saveItem(token, account: tokenAccount)
+    }
+
+    static func load() -> String? {
+        loadItem(account: tokenAccount)
+    }
+
+    static func delete() {
+        deleteItem(account: tokenAccount)
+    }
+
+    // MARK: - Canvas Session Cookie
+
+    static func saveCookie(_ cookieHeader: String) throws {
+        try saveItem(cookieHeader, account: cookieAccount)
+    }
+
+    static func loadCookie() -> String? {
+        loadItem(account: cookieAccount)
+    }
+
+    static func deleteCookie() {
+        deleteItem(account: cookieAccount)
+    }
+
+    // MARK: - Private helpers
+
+    private static func saveItem(_ value: String, account: String) throws {
+        let data = Data(value.utf8)
         let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
+            kSecClass:        kSecClassGenericPassword,
+            kSecAttrService:  service,
+            kSecAttrAccount:  account,
         ]
         SecItemDelete(query as CFDictionary)
 
         let attributes: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
-            kSecValueData: data,
+            kSecClass:        kSecClassGenericPassword,
+            kSecAttrService:  service,
+            kSecAttrAccount:  account,
+            kSecValueData:    data,
         ]
         let status = SecItemAdd(attributes as CFDictionary, nil)
         guard status == errSecSuccess else {
@@ -26,13 +57,13 @@ enum KeychainHelper {
         }
     }
 
-    static func load() -> String? {
+    private static func loadItem(account: String) -> String? {
         let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
-            kSecReturnData: true,
-            kSecMatchLimit: kSecMatchLimitOne,
+            kSecClass:        kSecClassGenericPassword,
+            kSecAttrService:  service,
+            kSecAttrAccount:  account,
+            kSecReturnData:   true,
+            kSecMatchLimit:   kSecMatchLimitOne,
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
@@ -40,14 +71,16 @@ enum KeychainHelper {
         return String(data: data, encoding: .utf8)
     }
 
-    static func delete() {
+    private static func deleteItem(account: String) {
         let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
+            kSecClass:       kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: account,
         ]
         SecItemDelete(query as CFDictionary)
     }
+
+    // MARK: - Error
 
     enum KeychainError: Error, LocalizedError {
         case saveFailed(OSStatus)

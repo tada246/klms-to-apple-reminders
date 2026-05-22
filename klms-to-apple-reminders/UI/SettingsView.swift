@@ -7,10 +7,6 @@ private let weekdayLabels: [(Int, String)] = [
 ]
 
 struct SettingsView: View {
-    @State private var token: String = ""
-    @State private var showToken = false
-    @State private var tokenSaveWork: DispatchWorkItem?
-
     @AppStorage("listName")      private var listName: String = "慶應課題"
     @AppStorage("daysAhead")     private var daysAhead: Int = 30
     @AppStorage("syncInterval")  private var syncIntervalRaw: String = SyncInterval.daily.rawValue
@@ -28,44 +24,6 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            // MARK: トークン
-            Section {
-                HStack {
-                    if showToken {
-                        TextField("トークンを入力", text: $token)
-                    } else {
-                        SecureField("トークンを入力", text: $token)
-                    }
-                    Button(showToken ? "隠す" : "表示") { showToken.toggle() }
-                        .buttonStyle(.plain)
-                        .foregroundColor(.accentColor)
-                        .font(.caption)
-                }
-                if !token.isEmpty && !TokenValidator.isValid(token) {
-                    Label("英数字のみ使用できます（スペース・記号は不可）", systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption)
-                        .foregroundColor(.orange)
-                }
-                Link("トークンを発行する →", destination: URL(string: "https://lms.keio.jp/profile/settings")!)
-                    .font(.caption)
-                Button("トークンを削除", role: .destructive) {
-                    tokenSaveWork?.cancel()
-                    KeychainHelper.delete()
-                    token = ""
-                }
-                .font(.caption)
-            } header: {
-                Text("K-LMS APIトークン")
-            } footer: {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("取得方法: K-LMS プロフィール設定 → 承認済みのアプリケーション → 新しいアクセストークン → 目的を入力 → トークンの生成 → コピー")
-                    Text("⚠️ 生成画面を閉じると再表示されません。必ずコピーしてから閉じてください。")
-                        .foregroundColor(.orange)
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
-            }
-
             // MARK: リマインダー設定
             Section {
                 LabeledContent("保存先リスト名") {
@@ -129,11 +87,8 @@ struct SettingsView: View {
                 Toggle("ログイン時に自動起動", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { enabled in
                         if #available(macOS 13.0, *) {
-                            if enabled {
-                                try? SMAppService.mainApp.register()
-                            } else {
-                                try? SMAppService.mainApp.unregister()
-                            }
+                            if enabled { try? SMAppService.mainApp.register() }
+                            else        { try? SMAppService.mainApp.unregister() }
                         }
                     }
             }
@@ -141,22 +96,10 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .frame(width: 420)
         .padding()
-        .onAppear {
-            token = KeychainHelper.load() ?? ""
-        }
-        // トークンは0.8秒の debounce で自動保存（英数字のみ）
-        .onChange(of: token) { newValue in
-            tokenSaveWork?.cancel()
-            guard !newValue.isEmpty, TokenValidator.isValid(newValue) else { return }
-            let work = DispatchWorkItem { try? KeychainHelper.save(newValue) }
-            tokenSaveWork = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
-        }
-        // スケジュール設定変更時は即座に再スケジュール
-        .onChange(of: autoSync)         { _ in onScheduleChanged?() }
-        .onChange(of: syncIntervalRaw)  { _ in onScheduleChanged?() }
-        .onChange(of: syncHour)         { _ in onScheduleChanged?() }
-        .onChange(of: syncMinute)       { _ in onScheduleChanged?() }
-        .onChange(of: syncWeekday)      { _ in onScheduleChanged?() }
+        .onChange(of: autoSync)        { _ in onScheduleChanged?() }
+        .onChange(of: syncIntervalRaw) { _ in onScheduleChanged?() }
+        .onChange(of: syncHour)        { _ in onScheduleChanged?() }
+        .onChange(of: syncMinute)      { _ in onScheduleChanged?() }
+        .onChange(of: syncWeekday)     { _ in onScheduleChanged?() }
     }
 }

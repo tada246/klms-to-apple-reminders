@@ -9,17 +9,13 @@ enum CanvasAuthService {
     // MARK: - Public
 
     /// Cookie ヘッダー文字列から Canvas 個人アクセストークンを生成して返す。
+    /// Canvas の JSON API は Content-Type: application/json があれば CSRF トークン不要。
     static func generateToken(cookieHeader: String) async throws -> String {
-        let csrfToken = extractCSRFToken(from: cookieHeader)
-
         var request = URLRequest(url: URL(string: "\(baseURL)/users/self/tokens")!)
         request.httpMethod = "POST"
         request.setValue(cookieHeader,       forHTTPHeaderField: "Cookie")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        if let csrf = csrfToken {
-            request.setValue(csrf, forHTTPHeaderField: "X-CSRF-Token")
-        }
 
         let body: [String: Any] = ["token": ["purpose": "klms-to-apple-reminders"]]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)

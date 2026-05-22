@@ -25,11 +25,17 @@ class SyncCoordinator: ObservableObject {
     func sync() async {
         guard !isSyncing else { return }
 
-        guard let token = KeychainHelper.load(), !token.isEmpty else {
-            isSessionExpired = true
-            lastError = "ログインが必要です。メニューから「再ログイン」を選択してください。"
-            onSessionExpired?()
-            return
+        // トークンがない場合、Cookie があればサイレントリフレッシュで生成を試みる
+        var token = KeychainHelper.load() ?? ""
+        if token.isEmpty {
+            let refreshed = await CanvasAuthService.silentRefresh()
+            token = KeychainHelper.load() ?? ""
+            if !refreshed || token.isEmpty {
+                isSessionExpired = true
+                lastError = "ログインが必要です。メニューから「再ログイン」を選択してください。"
+                onSessionExpired?()
+                return
+            }
         }
 
         isSyncing  = true

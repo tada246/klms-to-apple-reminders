@@ -63,38 +63,23 @@ class CanvasLoginWindowController: NSWindowController {
 
     // MARK: - Internal
 
-    /// ログイン成功後に Cookie リストを受け取り、トークン生成まで処理する。
+    /// ログイン成功後に Cookie リストを受け取り、Keychain に保存してウィンドウを閉じる。
+    /// トークン生成は行わず、最初の同期時に SyncCoordinator が silentRefresh で行う。
     @MainActor
-    func handleLoginSuccess(cookies: [HTTPCookie]) async {
+    func handleLoginSuccess(cookies: [HTTPCookie]) {
         guard !didComplete else { return }
         didComplete = true
 
         let cookieHeader = CanvasAuthService.buildCookieHeader(from: cookies)
+        try? KeychainHelper.saveCookie(cookieHeader)
+        UserDefaults.standard.set(Date(), forKey: "lastLoginDate")
 
-        do {
-            let token = try await CanvasAuthService.generateToken(cookieHeader: cookieHeader)
-            try KeychainHelper.save(token)
-            try KeychainHelper.saveCookie(cookieHeader)
-            UserDefaults.standard.set(Date(), forKey: "lastLoginDate")
+        #if DEBUG
+        print("[CanvasLogin] ログイン成功。Cookie を保存しました。")
+        #endif
 
-            onSuccess?()
-            window?.close()
-        } catch {
-            // トークン生成に失敗した場合はエラーを表示してリトライ可能にする
-            didComplete = false
-            let alert = NSAlert()
-            alert.messageText = "ログイン処理でエラーが発生しました"
-            alert.informativeText = """
-                \(error.localizedDescription)
-
-                ページが完全に読み込まれるのを待ってから、もう一度お試しください。
-                """
-            alert.alertStyle = .warning
-            alert.addButton(withTitle: "OK")
-            if let win = window {
-                await alert.beginSheetModal(for: win)
-            }
-        }
+        onSuccess?()
+        window?.close()
     }
 }
 
@@ -132,8 +117,8 @@ private class LoginNavDelegate: NSObject, WKNavigationDelegate {
             }
             guard hasSession else { return }
 
-            Task { @MainActor [weak self] in
-                await self?.owner?.handleLoginSuccess(cookies: cookies)
+            DispatchQueue.main.async { [weak self] in
+                self?.owner?.handleLoginSuccess(cookies: cookies)
             }
         }
     }

@@ -6,12 +6,19 @@ class StatusItemManager {
     private let popover: NSPopover
     private var cancellable: Any?
 
-    init(coordinator: SyncCoordinator, onOpenSettings: @escaping () -> Void) {
+    init(coordinator: SyncCoordinator,
+         onOpenSettings: @escaping () -> Void,
+         onRelogin: @escaping () -> Void) {
+
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         popover = NSPopover()
         popover.behavior = .transient
         popover.contentViewController = NSHostingController(
-            rootView: MenuBarView(coordinator: coordinator, onOpenSettings: onOpenSettings)
+            rootView: MenuBarView(
+                coordinator:    coordinator,
+                onOpenSettings: onOpenSettings,
+                onRelogin:      onRelogin
+            )
         )
 
         if let button = statusItem.button {
@@ -20,21 +27,24 @@ class StatusItemManager {
             button.target = self
         }
 
-        // Sync状態に応じてアイコン更新
+        // coordinator の状態変化に応じてアイコンを更新
         cancellable = coordinator.objectWillChange.sink { [weak self, weak coordinator] _ in
             DispatchQueue.main.async {
-                let syncing = coordinator?.isSyncing ?? false
-                let hasError = coordinator?.lastError != nil
-                self?.updateIcon(syncing: syncing, hasError: hasError)
+                self?.updateIcon(
+                    syncing:        coordinator?.isSyncing        ?? false,
+                    sessionExpired: coordinator?.isSessionExpired ?? false,
+                    hasError:       coordinator?.lastError != nil
+                )
             }
         }
     }
 
-    func updateIcon(syncing: Bool, hasError: Bool) {
+    func updateIcon(syncing: Bool, sessionExpired: Bool, hasError: Bool) {
         let name: String
-        if syncing        { name = "arrow.clockwise" }
-        else if hasError  { name = "exclamationmark.circle" }
-        else              { name = "checklist" }
+        if syncing          { name = "arrow.clockwise" }
+        else if sessionExpired { name = "lock.open.fill" }
+        else if hasError    { name = "exclamationmark.circle" }
+        else                { name = "checklist" }
         statusItem.button?.image = NSImage(systemSymbolName: name, accessibilityDescription: "K-LMS")
     }
 

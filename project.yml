@@ -23,7 +23,8 @@ targets:
       base:
         INFOPLIST_FILE: klms-to-apple-reminders/Info.plist
         CODE_SIGN_ENTITLEMENTS: klms-to-apple-reminders/klms-to-apple-reminders.entitlements
-    dependencies: []
+    dependencies:
+      - sdk: WebKit.framework
 
   klms-to-apple-remindersTests:
     type: bundle.unit-test

@@ -11,9 +11,6 @@ struct OnboardingView: View {
     @State private var step: Int = 1
     @State private var remindersStatus: RemindersStatus = .notDetermined
     @State private var store = EKEventStore()
-    @State private var token: String = ""
-    @State private var showToken = false
-    @State private var tokenSaveWork: DispatchWorkItem?
 
     @AppStorage("listName")               private var listName: String = "慶應課題"
     @AppStorage("syncInterval")           private var syncIntervalRaw: String = SyncInterval.daily.rawValue
@@ -24,6 +21,7 @@ struct OnboardingView: View {
     @AppStorage("launchAtLogin")          private var launchAtLogin: Bool = true
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
+    /// 完了時に呼ばれる（AppDelegate がログインウィンドウを開く）
     var onComplete: (() -> Void)?
 
     enum RemindersStatus { case notDetermined, granted, denied }
@@ -31,9 +29,9 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // ステップドット
+            // ステップドット（2 ステップ）
             HStack(spacing: 6) {
-                ForEach(1...3, id: \.self) { i in
+                ForEach(1...2, id: \.self) { i in
                     Circle()
                         .fill(i <= step ? Color.accentColor : Color.secondary.opacity(0.25))
                         .frame(width: 6, height: 6)
@@ -55,12 +53,10 @@ struct OnboardingView: View {
 
             Divider()
 
-            // コンテンツ
             Group {
                 switch step {
                 case 1: stepOne
-                case 2: stepTwo
-                default: stepThree
+                default: stepTwo
                 }
             }
             .padding(.horizontal, 24)
@@ -78,41 +74,33 @@ struct OnboardingView: View {
                         .font(.callout)
                 }
                 Spacer()
-                if step < 3 {
+                if step < 2 {
                     Button("次へ →") { step += 1 }
                         .buttonStyle(.borderedProminent)
                         .disabled(!canProceed)
                 } else {
-                    Button("はじめる") { complete() }
+                    Button("K-LMS にログイン →") { complete() }
                         .buttonStyle(.borderedProminent)
                 }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
         }
-        .frame(width: 400, height: 420)
+        .frame(width: 400, height: 400)
         .onAppear { syncRemindersStatus() }
     }
 
     // MARK: - Header
 
     private var headerIcon: String {
-        switch step {
-        case 1: return "checklist"
-        case 2: return "key.fill"
-        default: return "checkmark.seal.fill"
-        }
+        step == 1 ? "checklist" : "gearshape.fill"
     }
 
     private var headerTitle: String {
-        switch step {
-        case 1: return "リマインダーへのアクセス"
-        case 2: return "K-LMS APIトークン"
-        default: return "設定を確認"
-        }
+        step == 1 ? "リマインダーへのアクセス" : "設定を確認"
     }
 
-    // MARK: - Step 1
+    // MARK: - Step 1: リマインダー権限
 
     private var stepOne: some View {
         VStack(spacing: 14) {
@@ -147,7 +135,9 @@ struct OnboardingView: View {
                         .multilineTextAlignment(.center)
                     HStack(spacing: 8) {
                         Button("システム設定を開く") {
-                            NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders")!)
+                            NSWorkspace.shared.open(
+                                URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders")!
+                            )
                         }
                         .buttonStyle(.bordered)
                         Button("再確認") { Task { await requestRemindersAccess() } }
@@ -158,87 +148,9 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step 2
-
-    private var tokenValidationMessage: String? {
-        if token.isEmpty { return nil }
-        if !TokenValidator.isValid(token) { return TokenValidator.invalidMessage }
-        return nil
-    }
+    // MARK: - Step 2: 設定確認
 
     private var stepTwo: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // トークン入力欄
-            HStack(spacing: 6) {
-                Group {
-                    if showToken {
-                        TextField("トークンを貼り付け", text: $token)
-                    } else {
-                        SecureField("トークンを貼り付け", text: $token)
-                    }
-                }
-                .textFieldStyle(.roundedBorder)
-                Button(showToken ? "隠す" : "表示") { showToken.toggle() }
-                    .buttonStyle(.plain).foregroundColor(.accentColor).font(.caption)
-            }
-            .onChange(of: token) { newValue in
-                tokenSaveWork?.cancel()
-                guard !newValue.isEmpty, TokenValidator.isValid(newValue) else { return }
-                let work = DispatchWorkItem { try? KeychainHelper.save(newValue) }
-                tokenSaveWork = work
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
-            }
-
-            // バリデーションメッセージ
-            if let msg = tokenValidationMessage {
-                Label(msg, systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption).foregroundColor(.orange)
-            } else if token.isEmpty {
-                Label("トークンを入力してください", systemImage: "info.circle")
-                    .font(.caption).foregroundColor(.secondary)
-            } else {
-                Label("Keychainに自動保存されます", systemImage: "lock.fill")
-                    .font(.caption).foregroundColor(.secondary)
-            }
-
-            Divider()
-
-            // 取得手順
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text("取得方法")
-                        .font(.caption).fontWeight(.semibold).foregroundColor(.secondary)
-                    Spacer()
-                    Link("K-LMSを開く →", destination: URL(string: "https://lms.keio.jp/profile/settings")!)
-                        .font(.caption)
-                }
-
-                ForEach(tokenSteps, id: \.0) { num, text in
-                    HStack(alignment: .top, spacing: 6) {
-                        Text("\(num).")
-                            .font(.caption).foregroundColor(.accentColor)
-                            .frame(width: 14, alignment: .trailing)
-                        Text(text)
-                            .font(.caption).foregroundColor(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-        }
-    }
-
-    private let tokenSteps: [(Int, String)] = [
-        (1, "「承認済みのアプリケーション」セクションを探す"),
-        (2, "「新しいアクセストークン」をクリック"),
-        (3, "目的に「KLMS to Apple リマインダー」と入力"),
-        (4, "有効期限は空白のまま（または任意の期間）"),
-        (5, "「トークンの生成」をクリックし、表示されたトークンをコピー"),
-        (6, "⚠️ 画面を閉じると再表示不可。必ずコピーしてから閉じること"),
-    ]
-
-    // MARK: - Step 3
-
-    private var stepThree: some View {
         VStack(spacing: 0) {
             row("保存先リスト名") {
                 TextField("", text: $listName)
@@ -255,7 +167,9 @@ struct OnboardingView: View {
             if autoSync {
                 row("タイミング") {
                     Picker("", selection: $syncIntervalRaw) {
-                        ForEach(SyncInterval.allCases, id: \.rawValue) { Text($0.label).tag($0.rawValue) }
+                        ForEach(SyncInterval.allCases, id: \.rawValue) {
+                            Text($0.label).tag($0.rawValue)
+                        }
                     }
                     .frame(width: 85)
                 }
@@ -292,10 +206,18 @@ struct OnboardingView: View {
                     .onChange(of: launchAtLogin) { enabled in
                         if #available(macOS 13.0, *) {
                             if enabled { try? SMAppService.mainApp.register() }
-                            else { try? SMAppService.mainApp.unregister() }
+                            else        { try? SMAppService.mainApp.unregister() }
                         }
                     }
             }
+
+            Spacer()
+
+            Text("次の画面でK-LMSにログインすると設定が完了します。")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.top, 8)
         }
     }
 
@@ -311,16 +233,10 @@ struct OnboardingView: View {
     // MARK: - Logic
 
     private var canProceed: Bool {
-        switch step {
-        case 1: return remindersStatus == .granted
-        case 2: return TokenValidator.isValid(token)
-        default: return true
-        }
+        step == 1 ? remindersStatus == .granted : true
     }
 
     private func complete() {
-        tokenSaveWork?.cancel()
-        if !token.isEmpty { try? KeychainHelper.save(token) }
         hasCompletedOnboarding = true
         onComplete?()
     }

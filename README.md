@@ -2,37 +2,48 @@
 
 慶應義塾大学の K-LMS（Canvas LMS）から課題を取得して、Apple リマインダーに自動追加する macOS メニューバーアプリ。
 
-> MFAが毎回必要なK-LMSのログインを、APIトークン一度の発行で解決します。
-
 ## 仕組み
 
 ```
 K-LMS (Canvas API) → Swift macOS アプリ → EventKit → Apple リマインダー
 ```
 
-- APIトークンを一度発行すれば、以後 MFA なしで課題一覧を取得
+- アプリ内ブラウザ（WKWebView）で K-LMS に一度 SSO ログイン
+- ログイン後は Canvas セッション Cookie を使ってアクセストークンを自動生成・更新
+- セッションが切れたらメニューバーのアイコンが変わり、ワンクリックで再ログイン
+- トークンの手動発行・コピー&ペーストは一切不要
 - 提出済み・重複した課題はスキップ
-- メニューバーから手動同期、または自動スケジュール（毎時間・毎日・毎週）
-- トークンは macOS Keychain に安全に保存
+- トークンと Cookie は macOS Keychain に安全に保存
+
+### 認証フロー
+
+```
+初回 / 再ログイン:
+  WKWebView で SSO ログイン
+       ↓
+  canvas_session Cookie を Keychain に保存
+       ↓
+  Cookie で POST /api/v1/users/self/tokens → アクセストークン自動生成
+       ↓
+  トークンで通常の API 呼び出し
+
+トークン期限切れ (401):
+       ↓
+  Cookie がまだ有効? ─── Yes ──▶ サイレントにトークン再生成（ユーザー操作不要）
+       │ No
+       ▼
+  メニューバーアイコンが 🔓 に変化 → ユーザーに再ログインを通知
+```
 
 ## セットアップ
 
-### 1. APIトークンを発行
-
-1. [https://lms.keio.jp/profile/settings](https://lms.keio.jp/profile/settings) を開く
-2. **「承認済みのアプリケーション」** セクションへスクロール
-3. **「新しいアクセストークン」** をクリック
-4. 目的を入力（例: `KLMS to Apple リマインダー`）
-5. 有効期限は空白（または任意の期間）のまま → **「トークンの生成」**
-6. 表示されたトークンをコピー（**画面を閉じると再表示不可**）
-
-### 2. ビルド & インストール
+### 1. ビルド & インストール
 
 ```bash
 # プロジェクト生成（初回 or ファイル追加後）
 xcodegen generate
 
-# Releaseビルドして /Applications にコピー
+# Release ビルドして /Applications にコピー
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 xcodebuild -project klms-to-apple-reminders.xcodeproj \
   -scheme klms-to-apple-reminders \
@@ -44,15 +55,16 @@ cp -R /tmp/klms-build/Build/Products/Release/klms-to-apple-reminders.app /Applic
 
 初回起動時は Finder で右クリック → **「開く」** で起動してください（Gatekeeper のダイアログをスキップするため）。
 
-### 3. 初回設定（オンボーディング）
+### 2. 初回設定（オンボーディング）
 
 アプリを起動すると初回設定ウィザードが表示されます。
 
 1. **リマインダーへのアクセスを許可する** → macOS のダイアログで「OK」
-2. **APIトークンを入力**（英数字のみ）
-3. **同期設定を確認**（リスト名・タイミング・自動起動）→ **「はじめる」**
+2. **同期設定を確認**（リスト名・タイミング・自動起動）→ **「K-LMS にログイン →」**
+3. **アプリ内ブラウザで K-LMS にログイン**（SSOのダイアログが表示されます）
+4. ログイン完了後、ウィンドウが自動で閉じます。これで設定完了です。
 
-### 4. 動作確認
+### 3. 動作確認
 
 メニューバーのアイコンをクリック → **「今すぐ同期」** で課題が Apple リマインダーに追加されます。
 
@@ -60,11 +72,13 @@ cp -R /tmp/klms-build/Build/Products/Release/klms-to-apple-reminders.app /Applic
 
 | 機能 | 説明 |
 |---|---|
+| 自動ログイン | SSO でログイン後、トークンを自動生成。手動発行不要 |
+| 自動リフレッシュ | トークン期限切れを検知し、Cookie で自動再生成（操作不要） |
+| 再ログイン通知 | セッション切れ時はメニューバーアイコンが 🔓 に変わり再ログインを促す |
 | 自動同期 | 毎時間 / 毎日（時刻指定）/ 毎週（曜日・時刻指定） |
 | 重複スキップ | 既にリマインダーにある課題・提出済み課題はスキップ |
 | リスト自動作成 | 指定リストが存在しない場合は自動で作成 |
 | ログイン時起動 | macOS ログイン時に自動起動（デフォルト ON） |
-| トークン検証 | 英数字以外の入力をリアルタイムで検出 |
 
 ## ファイル構成
 
@@ -72,22 +86,24 @@ cp -R /tmp/klms-build/Build/Products/Release/klms-to-apple-reminders.app /Applic
 klms-to-apple-reminders/
 ├── App/
 │   ├── KLMSToAppleRemindersApp.swift  # エントリーポイント
-│   └── AppDelegate.swift              # 起動・サービス管理
+│   └── AppDelegate.swift              # 起動・サービス管理・ログインウィンドウ制御
 ├── Models/
 │   ├── Assignment.swift               # 課題モデル
 │   └── SyncResult.swift               # 同期結果モデル
 ├── Services/
+│   ├── CanvasAuthService.swift        # Cookie → トークン生成・サイレントリフレッシュ
 │   ├── KLMSClient.swift               # Canvas API クライアント
 │   ├── RemindersService.swift         # EventKit 連携
 │   ├── SchedulerService.swift         # 自動同期スケジューラ
-│   └── SyncCoordinator.swift          # 同期処理の統括
+│   └── SyncCoordinator.swift          # 同期処理・セッション状態管理
 ├── Storage/
 │   ├── AppSettings.swift              # 設定 (UserDefaults)
-│   ├── KeychainHelper.swift           # トークン保存 (Keychain)
-│   └── TokenValidator.swift           # トークン形式チェック
+│   ├── KeychainHelper.swift           # トークン・Cookie 保存 (Keychain)
+│   └── TokenValidator.swift           # （内部用）
 ├── UI/
-│   ├── MenuBarView.swift              # メニューバー UI
-│   ├── OnboardingView.swift           # 初回設定ウィザード
+│   ├── CanvasLoginWindow.swift        # WKWebView SSO ログインウィンドウ
+│   ├── MenuBarView.swift              # メニューバー UI（前回ログイン・再ログインボタン）
+│   ├── OnboardingView.swift           # 初回設定ウィザード（2 ステップ）
 │   ├── SettingsView.swift             # 設定画面
 │   └── StatusItemManager.swift        # メニューバーアイコン管理
 ├── Info.plist
@@ -110,8 +126,9 @@ plutil -replace hasCompletedOnboarding -bool NO \
 # 全設定をリセット
 rm ~/Library/Preferences/io.github.tada246.klms-to-apple-reminders.plist
 
-# APIトークンを削除
-security delete-generic-password -s "io.github.tada246.klms-to-apple-reminders"
+# Keychain のトークンと Cookie を削除
+security delete-generic-password -s "io.github.tada246.klms-to-apple-reminders" -a "api-token"
+security delete-generic-password -s "io.github.tada246.klms-to-apple-reminders" -a "canvas-session"
 
 # リマインダー権限をリセット
 tccutil reset Reminders io.github.tada246.klms-to-apple-reminders
@@ -119,17 +136,20 @@ tccutil reset Reminders io.github.tada246.klms-to-apple-reminders
 
 ## よくある質問
 
-**Q: トークンの有効期限は？**
-有効期限なしで発行した場合は無期限。切れた場合は K-LMS で再発行し、設定画面から更新してください。
+**Q: K-LMS へのログインはどのくらいの頻度で必要ですか？**
+Canvas のセッション Cookie の有効期間に依存します。期限が切れると自動でサイレントリフレッシュを試み、それも失敗した場合のみメニューバーアイコンが変化して再ログインを促します。
+
+**Q: 再ログインの方法は？**
+メニューバーのアイコンをクリック → **「再ログイン」** ボタンを押すとアプリ内ブラウザが開きます。Shibboleth セッションが残っていれば自動でログインが完了します。
 
 **Q: 課題が取得できない**
-設定画面でトークンが正しく入力されているか確認してください。英数字のみ有効です。
+メニューバーアイコンをクリックして状態を確認してください。セッション切れの場合は「再ログイン」、その他のエラーはしばらく待ってから「今すぐ同期」を試してください。
 
 **Q: リマインダーのリスト名を変えたい**
 設定画面（メニューバーアイコン → 設定）から変更できます。
 
 **Q: K-Pass（MFA）と共存できる？**
-できます。このアプリは Canvas API のみ使用し、K-Pass の動作には影響しません。
+できます。アプリ内ブラウザがログイン画面をそのまま表示するため、MFA も通常どおり操作できます。
 
 ## ライセンス
 

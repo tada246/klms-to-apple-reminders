@@ -7,15 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10247765C253C0275F8F77AE /* CanvasAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405B8624322E9A5D6265CD17 /* CanvasAuthService.swift */; };
 		201054C8E6F5C2BD3D74BC81 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */; };
 		20BB04F34DB08F5C5D4C29BD /* TokenValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */; };
 		2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396A859A64078B70C5F5E32 /* AppSettings.swift */; };
+		5E636ABB0C6E4EA290CC177F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F62753E88897E3BA9DBFAA37 /* WebKit.framework */; };
 		68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */; };
 		7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */; };
 		864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502DCFA91C698135978CAFB /* RemindersService.swift */; };
 		8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */; };
 		971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9426FE520EAE131785044B /* SyncCoordinator.swift */; };
 		AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6641E190882834685560A13E /* KeychainHelperTests.swift */; };
+		C27764182C9D97E5F63827A2 /* CanvasLoginWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0EE11B1326A7E8EA73590 /* CanvasLoginWindow.swift */; };
 		C3ADDD32591C823D33CDE08C /* TokenValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */; };
 		CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818DFB44D6DF41D8C5628EB9 /* Assignment.swift */; };
 		D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2A049CFADEADDDACFB512 /* SettingsView.swift */; };
@@ -45,6 +48,7 @@
 		2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "klms-to-apple-reminders.entitlements"; sourceTree = "<group>"; };
 		2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSClient.swift; sourceTree = "<group>"; };
 		3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSToAppleRemindersApp.swift; sourceTree = "<group>"; };
+		405B8624322E9A5D6265CD17 /* CanvasAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAuthService.swift; sourceTree = "<group>"; };
 		5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
 		5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
 		61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
@@ -57,8 +61,21 @@
 		DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidatorTests.swift; sourceTree = "<group>"; };
 		E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidator.swift; sourceTree = "<group>"; };
 		E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klms-to-apple-reminders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F62753E88897E3BA9DBFAA37 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		F9DAA67BD1A554AC8447F39D /* klms-to-apple-remindersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "klms-to-apple-remindersTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAF0EE11B1326A7E8EA73590 /* CanvasLoginWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasLoginWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		881AC30E1A1382EA72DAD1C5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E636ABB0C6E4EA290CC177F /* WebKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		09A1D1BB6D550AAE5BC3F756 /* Products */ = {
@@ -70,9 +87,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		0F72EC17E425DA430624C980 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F62753E88897E3BA9DBFAA37 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		2D6C707AC6EE896E9007C616 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FAF0EE11B1326A7E8EA73590 /* CanvasLoginWindow.swift */,
 				050C502AB04744DA84179076 /* MenuBarView.swift */,
 				08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */,
 				23E2A049CFADEADDDACFB512 /* SettingsView.swift */,
@@ -116,6 +142,7 @@
 		66DCBB7A7F2AEFBB75BDD2A0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				405B8624322E9A5D6265CD17 /* CanvasAuthService.swift */,
 				2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */,
 				6502DCFA91C698135978CAFB /* RemindersService.swift */,
 				5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */,
@@ -129,6 +156,7 @@
 			children = (
 				501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */,
 				3BC1D91CC53F784F6DCFC1BA /* klms-to-apple-remindersTests */,
+				0F72EC17E425DA430624C980 /* Frameworks */,
 				09A1D1BB6D550AAE5BC3F756 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -178,6 +206,7 @@
 			buildConfigurationList = 3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */;
 			buildPhases = (
 				CCADCB377F75423BF13EEE6A /* Sources */,
+				881AC30E1A1382EA72DAD1C5 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -237,6 +266,8 @@
 				ED3B8D25B930A45895E8A931 /* AppDelegate.swift in Sources */,
 				2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */,
 				CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */,
+				10247765C253C0275F8F77AE /* CanvasAuthService.swift in Sources */,
+				C27764182C9D97E5F63827A2 /* CanvasLoginWindow.swift in Sources */,
 				F86D385F6ACD69BCD77EB4C8 /* KLMSClient.swift in Sources */,
 				FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */,
 				D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */,

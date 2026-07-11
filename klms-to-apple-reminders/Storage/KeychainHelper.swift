@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 enum KeychainHelper {
-    private static let service = "io.github.tada246.klms-to-apple-reminders"
+    private static let service = "klms-to-apple-reminders"
     private static let feedURLAccount = "ics-feed-url"
 
     // MARK: - ICS Feed URL

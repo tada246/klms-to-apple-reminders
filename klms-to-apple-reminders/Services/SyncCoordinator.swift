@@ -61,11 +61,12 @@ class SyncCoordinator: ObservableObject {
             let client      = ICSFeedClient(feedURL: feedURL)
             let assignments = try await client.fetchAssignments(daysAhead: settings.daysAhead)
             let list        = try reminders.findOrCreateList(named: settings.listName)
-            let existing    = await reminders.existingUIDs(in: list)
+            let existing    = await reminders.existingAssignmentIDs(in: list)
 
             var added = 0, skipped = 0
             for assignment in assignments {
-                if existing.contains(assignment.uid) {
+                if let id = RemindersService.assignmentID(fromUID: assignment.uid),
+                   existing.contains(id) {
                     skipped += 1
                     continue
                 }

@@ -8,5 +8,8 @@ struct Assignment: Identifiable, Codable {
     let title: String
     let courseName: String
     let dueAt: Date?
+    /// 締切が「日付のみ」（Canvas の終日課題, DTSTART;VALUE=DATE）かどうか。
+    /// true のときリマインダーは時刻なし（0:00 を表示しない）で登録する。
+    let isAllDay: Bool
     let url: URL?
 }

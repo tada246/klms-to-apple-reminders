@@ -93,7 +93,7 @@ struct ICSFeedClient {
 
             let (title, courseName) = ICSParser.splitTitleAndCourse(from: event.summary ?? "")
 
-            let url = event.url.flatMap { URL(string: $0) }
+            let url = ICSParser.assignmentPageURL(rawURL: event.url, uid: event.uid)
 
             assignments.append(
                 Assignment(
@@ -102,6 +102,7 @@ struct ICSFeedClient {
                     title: title,
                     courseName: courseName,
                     dueAt: dueAt,
+                    isAllDay: event.isAllDay,
                     url: url
                 )
             )
@@ -117,6 +118,8 @@ private enum ICSParser {
         let uid: String
         let summary: String?
         let dtStart: Date?
+        /// DTSTART が VALUE=DATE（終日）だったか。時刻を持たない締切を表す。
+        let isAllDay: Bool
         let url: String?
     }
 
@@ -187,6 +190,7 @@ private enum ICSParser {
         var uid: String? = nil
         var summary: String? = nil
         var dtStart: Date? = nil
+        var isAllDay = false
         var url: String? = nil
 
         for line in lines {
@@ -200,6 +204,7 @@ private enum ICSParser {
                 summary = unescape(value)
             case "DTSTART":
                 dtStart = parseDate(value: value, params: params)
+                isAllDay = params["VALUE"]?.uppercased() == "DATE"
             case "URL":
                 url = unescape(value)
             default:
@@ -209,7 +214,7 @@ private enum ICSParser {
 
         guard let finalUID = uid else { return nil }
 
-        return VEventRaw(uid: finalUID, summary: summary, dtStart: dtStart, url: url)
+        return VEventRaw(uid: finalUID, summary: summary, dtStart: dtStart, isAllDay: isAllDay, url: url)
     }
 
     /// "NAME;PARAM1=X;PARAM2=Y:VALUE" 形式の行を (name, params, value) に分解する。
@@ -300,21 +305,88 @@ private enum ICSParser {
         return formatter.date(from: value)
     }
 
-    /// Canvas の SUMMARY は「課題名 [コース名]」形式。
-    /// 末尾が "[...]" ならその中身を courseName に、残り（末尾空白トリム）を title にする。
-    /// "[...]" が無ければ title = SUMMARY 全体、courseName = ""。
+    /// Canvas の SUMMARY は「課題名 [[時限]教員名　コース名 [キャンパス 教室]]」形式。
+    /// コース情報は末尾の「最上位の [...] グループ」に入る（内側にさらに [] が入れ子になる）。
+    /// タイトル自体が [] を含む場合（例:「任意課題[慶應義塾史展示館]」）があるため、
+    /// 単純な lastIndex(of:"[") ではなく括弧の対応を取って最後の最上位グループを特定する。
     static func splitTitleAndCourse(from summary: String) -> (title: String, courseName: String) {
-        guard summary.hasSuffix("]"),
-              let openBracketIndex = summary.lastIndex(of: "[") else {
-            return (summary, "")
+        let chars = Array(summary)
+        var depth = 0
+        var groupStart: Int? = nil        // 現在の最上位グループの開き位置
+        var lastGroupRange: (Int, Int)? = nil
+        for (i, c) in chars.enumerated() {
+            if c == "[" {
+                if depth == 0 { groupStart = i }
+                depth += 1
+            } else if c == "]", depth > 0 {
+                depth -= 1
+                if depth == 0, let s = groupStart {
+                    lastGroupRange = (s, i)
+                    groupStart = nil
+                }
+            }
         }
 
-        let courseName = String(summary[summary.index(after: openBracketIndex)..<summary.index(before: summary.endIndex)])
-        var titlePart = String(summary[summary.startIndex..<openBracketIndex])
-        while let last = titlePart.last, last == " " {
-            titlePart.removeLast()
+        guard let (start, end) = lastGroupRange else {
+            return (summary.trimmingCharacters(in: .whitespaces), "")
         }
 
-        return (titlePart, courseName)
+        let title = String(chars[0..<start]).trimmingCharacters(in: .whitespaces)
+        let inner = String(chars[(start + 1)..<end])   // 最上位グループの中身
+        let course = cleanCourse(inner)
+        return (title.isEmpty ? summary.trimmingCharacters(in: .whitespaces) : title, course)
+    }
+
+    /// 「[時限]教員名　コース名 [キャンパス 教室]」からコース名だけを取り出す。
+    /// 先頭の [時限] と、全角スペース区切りの教員名、末尾の " [キャンパス]" を取り除く。
+    /// コース名に直接付く "[DS1]" 等（スペースなしの角括弧）は残す。
+    static func cleanCourse(_ raw: String) -> String {
+        var s = raw.trimmingCharacters(in: .whitespaces)
+
+        // 先頭の [時限] を除去（時限には入れ子が無いので最初の "]" まで）。
+        if s.hasPrefix("["), let close = s.firstIndex(of: "]") {
+            s = String(s[s.index(after: close)...]).trimmingCharacters(in: .whitespaces)
+        }
+
+        // 末尾の " [キャンパス 教室]"（スペース+角括弧）を除去。
+        // "統計基礎[DS1]" のようにスペースを挟まない角括弧はコース名の一部として残す。
+        if s.hasSuffix("]"), let r = s.range(of: " [", options: .backwards) {
+            s = String(s[s.startIndex..<r.lowerBound]).trimmingCharacters(in: .whitespaces)
+        }
+
+        // 全角スペースで「教員名　コース名」を分割し、コース名側を採用。
+        if let r = s.range(of: "　") {
+            s = String(s[r.upperBound...])
+        }
+
+        return s.trimmingCharacters(in: .whitespaces)
+    }
+
+    /// リマインダーのリンク先として、可能なら課題ページの正規 URL を組み立てる。
+    /// 生の URL は "…/calendar?include_contexts=course_136629&…#assignment_1269269" という
+    /// カレンダー URL なので、course_ と assignment_ の ID を抜いて直リンクにする。
+    /// 抜けない場合は生 URL、それも無ければ UID から assignment ID だけで組む。
+    static func assignmentPageURL(rawURL: String?, uid: String) -> URL? {
+        if let raw = rawURL,
+           let courseID = firstMatch(in: raw, pattern: "course_(\\d+)"),
+           let assignmentID = firstMatch(in: raw, pattern: "assignment_(\\d+)") {
+            return URL(string: "https://lms.keio.jp/courses/\(courseID)/assignments/\(assignmentID)")
+        }
+        if let raw = rawURL, let url = URL(string: raw) {
+            return url
+        }
+        if let assignmentID = firstMatch(in: uid, pattern: "assignment[-_](\\d+)") {
+            return URL(string: "https://lms.keio.jp/assignments/\(assignmentID)")
+        }
+        return nil
+    }
+
+    /// 正規表現の最初のキャプチャグループを返す。
+    static func firstMatch(in text: String, pattern: String) -> String? {
+        guard let re = try? NSRegularExpression(pattern: pattern) else { return nil }
+        let range = NSRange(text.startIndex..., in: text)
+        guard let m = re.firstMatch(in: text, range: range), m.numberOfRanges >= 2,
+              let r = Range(m.range(at: 1), in: text) else { return nil }
+        return String(text[r])
     }
 }

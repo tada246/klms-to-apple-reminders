@@ -41,46 +41,45 @@ class RemindersService {
         return list
     }
 
-    /// リマインダーの notes に埋め込む不可視マーカーの正規表現。
-    /// `[klms:<uid>]` の形式で、ICS の UID をそのまま dedup キーとして使う。
-    private static let markerRegex = try! NSRegularExpression(pattern: "\\[klms:([^\\]]+)\\]")
+    /// dedup キー = 課題の数値 ID。UID（例: "event-assignment-1269269"）と
+    /// リマインダーの URL（例: "…/assignments/1269269"）の両方から同じ ID を取り出せる。
+    ///
+    /// 以前は `submitted`（Canvas API の提出済みフラグ）で重複回避していたが、.ics には
+    /// 提出済みフラグが無い。当初は notes に `[klms:<uid>]` マーカーを埋めていたが、それが
+    /// ユーザーの目に見えるノイズになるため、リマインダーの url に埋まる課題 ID で照合する
+    /// 方式に変更した（notes は綺麗なまま保てる）。
+    private static let idRegex = try! NSRegularExpression(pattern: "assignments?[-_/](\\d+)")
 
-    /// notes 末尾に付与する dedup 用マーカー行を生成する。
-    /// ICS UID は `event-assignment-123@lms.keio.jp` のような形式で `]` を含まない前提だが、
-    /// 抽出側は `[^\]]+` で堅牢に扱う。
-    /// 純粋関数（EKEventStore に依存しない）のため nonisolated にし、
-    /// MainActor 外（テストなど）からも同期的に呼べるようにする。
-    nonisolated static func marker(for uid: String) -> String {
-        "[klms:\(uid)]"
-    }
-
-    /// notes からマーカーに埋め込まれた UID を抽出する。マーカーが無ければ nil
-    /// （ユーザーが手動作成したリマインダーなど、klms 由来でないものは無視する）。
-    nonisolated static func extractUID(from notes: String?) -> String? {
-        guard let notes else { return nil }
-        let range = NSRange(notes.startIndex..<notes.endIndex, in: notes)
-        guard let match = markerRegex.firstMatch(in: notes, range: range),
-              let uidRange = Range(match.range(at: 1), in: notes) else {
+    /// 純粋関数（EKEventStore 非依存）なので nonisolated。テストからも同期的に呼べる。
+    nonisolated static func assignmentID(in text: String) -> String? {
+        let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        guard let match = idRegex.firstMatch(in: text, range: range),
+              let r = Range(match.range(at: 1), in: text) else {
             return nil
         }
-        return String(notes[uidRange])
+        return String(text[r])
     }
 
-    /// 既存リマインダーの UID 集合を取得する。
-    ///
-    /// 以前は `submitted`（Canvas API の提出済みフラグ）で重複回避していたが、
-    /// .ics フィードには提出済みフラグが存在しないため、ICS の安定 UID を
-    /// notes に埋め込んだマーカー（`[klms:<uid>]`）による dedup 方式に変更した。
+    nonisolated static func assignmentID(fromUID uid: String) -> String? {
+        assignmentID(in: uid)
+    }
+
+    nonisolated static func assignmentID(from url: URL?) -> String? {
+        guard let s = url?.absoluteString else { return nil }
+        return assignmentID(in: s)
+    }
+
+    /// 既存リマインダーの課題 ID 集合を取得する。
     ///
     /// 完了済みリマインダーも含めて走査する（isCompleted によるフィルタは行わない）。
     /// これは、完了済みの課題が次回同期時に「未走査」扱いとなって復活してしまう
     /// のを防ぐため。ユーザーが完了にしたリマインダーは再作成されるべきではない。
-    func existingUIDs(in list: EKCalendar) async -> Set<String> {
+    func existingAssignmentIDs(in list: EKCalendar) async -> Set<String> {
         let predicate = store.predicateForReminders(in: [list])
         return await withCheckedContinuation { cont in
             store.fetchReminders(matching: predicate) { reminders in
-                let uids = Set((reminders ?? []).compactMap { Self.extractUID(from: $0.notes) })
-                cont.resume(returning: uids)
+                let ids = Set((reminders ?? []).compactMap { Self.assignmentID(from: $0.url) })
+                cont.resume(returning: ids)
             }
         }
     }
@@ -92,20 +91,15 @@ class RemindersService {
         reminder.url = assignment.url
 
         if let due = assignment.dueAt {
-            let comps = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: due)
-            reminder.dueDateComponents = comps
+            // 終日課題（VALUE=DATE）は時刻を付けない → リマインダーが「0:00」を表示しない。
+            let fields: Set<Calendar.Component> = assignment.isAllDay
+                ? [.year, .month, .day]
+                : [.year, .month, .day, .hour, .minute]
+            reminder.dueDateComponents = Calendar.current.dateComponents(fields, from: due)
         }
 
-        var notesLines: [String] = []
-        if !assignment.courseName.isEmpty {
-            notesLines.append(assignment.courseName)
-        }
-        if let url = assignment.url {
-            notesLines.append(url.absoluteString)
-        }
-        // dedup の要となるマーカー行。notes が他に空でも必ず付与する。
-        notesLines.append(Self.marker(for: assignment.uid))
-        reminder.notes = notesLines.joined(separator: "\n")
+        // notes はコース名のみ（URL はリマインダーの url フィールドにあるので重複させない）。
+        reminder.notes = assignment.courseName.isEmpty ? nil : assignment.courseName
 
         try store.save(reminder, commit: true)
     }

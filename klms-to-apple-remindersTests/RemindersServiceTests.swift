@@ -1,56 +1,53 @@
 import XCTest
 @testable import klms_to_apple_reminders
 
-/// RemindersService のマーカー生成・抽出ロジック（純粋関数部分）のテスト。
-/// EKEventStore は実機依存のためここではテストせず、`marker(for:)` /
-/// `extractUID(from:)` の静的ヘルパーのみを検証する。
+/// RemindersService の dedup キー抽出（純粋関数部分）のテスト。
+/// EKEventStore は実機依存のためここではテストせず、課題 ID 抽出ロジックのみ検証する。
+/// dedup は UID とリマインダー URL の両方から同じ課題数値 ID を取り出せることに依存する。
 final class RemindersServiceTests: XCTestCase {
 
-    // MARK: - marker(for:)
+    // MARK: - UID からの ID 抽出
 
-    func testMarkerFormat() {
-        let marker = RemindersService.marker(for: "event-assignment-123@lms.keio.jp")
-        XCTAssertEqual(marker, "[klms:event-assignment-123@lms.keio.jp]")
+    func testAssignmentIDFromUID() {
+        XCTAssertEqual(RemindersService.assignmentID(fromUID: "event-assignment-1269269"), "1269269")
     }
 
-    // MARK: - extractUID(from:)
-
-    func testExtractUIDFromMarkerOnly() {
-        let notes = "[klms:event-assignment-123@lms.keio.jp]"
-        XCTAssertEqual(RemindersService.extractUID(from: notes), "event-assignment-123@lms.keio.jp")
+    func testAssignmentIDFromUIDWithDomainSuffix() {
+        XCTAssertEqual(RemindersService.assignmentID(fromUID: "event-assignment-456@lms.keio.jp"), "456")
     }
 
-    func testExtractUIDFromNotesWithCourseAndURL() {
-        let notes = """
-        情報理論
-        https://lms.keio.jp/courses/123/assignments/456
-        [klms:event-assignment-456@lms.keio.jp]
-        """
-        XCTAssertEqual(RemindersService.extractUID(from: notes), "event-assignment-456@lms.keio.jp")
+    func testAssignmentIDFromNonAssignmentUIDIsNil() {
+        XCTAssertNil(RemindersService.assignmentID(fromUID: "event-calendar-event-999"))
     }
 
-    func testExtractUIDReturnsNilWhenNoMarker() {
-        let notes = "買い物リスト\n牛乳を買う"
-        XCTAssertNil(RemindersService.extractUID(from: notes))
+    // MARK: - URL からの ID 抽出
+
+    func testAssignmentIDFromCanonicalURL() {
+        let url = URL(string: "https://lms.keio.jp/courses/136629/assignments/1269269")
+        XCTAssertEqual(RemindersService.assignmentID(from: url), "1269269")
     }
 
-    func testExtractUIDReturnsNilWhenNotesIsNil() {
-        XCTAssertNil(RemindersService.extractUID(from: nil))
+    func testAssignmentIDFromCalendarURLFragment() {
+        // 旧形式（カレンダー URL の #assignment_ フラグメント）でも同じ ID が取れること
+        let url = URL(string: "https://lms.keio.jp/calendar?include_contexts=course_136629&month=06#assignment_1269269")
+        XCTAssertEqual(RemindersService.assignmentID(from: url), "1269269")
     }
 
-    func testExtractUIDReturnsNilForEmptyString() {
-        XCTAssertNil(RemindersService.extractUID(from: ""))
+    func testAssignmentIDIgnoresCourseID() {
+        // course_136629 の数字を誤って拾わないこと
+        let url = URL(string: "https://lms.keio.jp/calendar?include_contexts=course_136629&month=06#assignment_777")
+        XCTAssertEqual(RemindersService.assignmentID(from: url), "777")
     }
 
-    func testMarkerRoundTrip() {
-        let uid = "event-assignment-789@lms.keio.jp"
-        let notes = "コース名\n\(RemindersService.marker(for: uid))"
-        XCTAssertEqual(RemindersService.extractUID(from: notes), uid)
+    func testAssignmentIDFromNilURLIsNil() {
+        XCTAssertNil(RemindersService.assignmentID(from: nil))
     }
 
-    func testExtractUIDIgnoresUnrelatedBrackets() {
-        // klms: プレフィックスの無い角括弧は無視すること
-        let notes = "[note] これはメモです\n[klms:event-assignment-999@lms.keio.jp]"
-        XCTAssertEqual(RemindersService.extractUID(from: notes), "event-assignment-999@lms.keio.jp")
+    // MARK: - 往復（UID と URL が一致すること）
+
+    func testUIDAndURLYieldSameID() {
+        let uid = "event-assignment-1270357"
+        let url = URL(string: "https://lms.keio.jp/courses/139723/assignments/1270357")
+        XCTAssertEqual(RemindersService.assignmentID(fromUID: uid), RemindersService.assignmentID(from: url))
     }
 }

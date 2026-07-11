@@ -7,8 +7,7 @@ class StatusItemManager {
     private var cancellable: Any?
 
     init(coordinator: SyncCoordinator,
-         onOpenSettings: @escaping () -> Void,
-         onRelogin: @escaping () -> Void) {
+         onOpenSettings: @escaping () -> Void) {
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         popover = NSPopover()
@@ -16,8 +15,7 @@ class StatusItemManager {
         popover.contentViewController = NSHostingController(
             rootView: MenuBarView(
                 coordinator:    coordinator,
-                onOpenSettings: onOpenSettings,
-                onRelogin:      onRelogin
+                onOpenSettings: onOpenSettings
             )
         )
 
@@ -31,18 +29,18 @@ class StatusItemManager {
         cancellable = coordinator.objectWillChange.sink { [weak self, weak coordinator] _ in
             DispatchQueue.main.async {
                 self?.updateIcon(
-                    syncing:        coordinator?.isSyncing        ?? false,
-                    sessionExpired: coordinator?.isSessionExpired ?? false,
-                    hasError:       coordinator?.lastError != nil
+                    syncing:      coordinator?.isSyncing    ?? false,
+                    notConfigured: !(coordinator?.isConfigured ?? true),
+                    hasError:     coordinator?.lastError != nil
                 )
             }
         }
     }
 
-    func updateIcon(syncing: Bool, sessionExpired: Bool, hasError: Bool) {
+    func updateIcon(syncing: Bool, notConfigured: Bool, hasError: Bool) {
         let name: String
         if syncing          { name = "arrow.clockwise" }
-        else if sessionExpired { name = "lock.open.fill" }
+        else if notConfigured { name = "exclamationmark.circle" }
         else if hasError    { name = "exclamationmark.circle" }
         else                { name = "checklist" }
         statusItem.button?.image = NSImage(systemSymbolName: name, accessibilityDescription: "K-LMS")

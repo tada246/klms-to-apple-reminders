@@ -16,14 +16,56 @@ struct SettingsView: View {
     @AppStorage("autoSync")      private var autoSync: Bool = true
     @AppStorage("launchAtLogin") private var launchAtLogin: Bool = true
 
+    @State private var feedURLInput: String = KeychainHelper.loadFeedURL() ?? ""
+    @State private var feedURLError: String?
+    @State private var feedURLSaved: Bool = false
+
     var onScheduleChanged: (() -> Void)?
+    var onFeedURLSaved:    (() -> Void)?
+    var onSyncNow:         (() -> Void)?
 
     private var syncInterval: SyncInterval {
         SyncInterval(rawValue: syncIntervalRaw) ?? .daily
     }
 
+    private var isConfigured: Bool {
+        KeychainHelper.loadFeedURL() != nil
+    }
+
     var body: some View {
         Form {
+            // MARK: Canvas カレンダーフィード
+            Section {
+                TextField("https://lms.keio.jp/feeds/calendars/xxxxx.ics", text: $feedURLInput)
+                    .textFieldStyle(.roundedBorder)
+
+                if let error = feedURLError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+
+                if feedURLSaved {
+                    Label("保存しました", systemImage: "checkmark.circle.fill")
+                        .font(.caption)
+                        .foregroundColor(.green)
+                }
+
+                HStack {
+                    Button("保存") { saveFeedURL() }
+                        .disabled(feedURLInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                    if isConfigured, let onSyncNow {
+                        Button("今すぐ同期") { onSyncNow() }
+                    }
+                }
+            } header: {
+                Text("Canvas カレンダーフィード")
+            } footer: {
+                Text("Canvas → カレンダー → 左下の「カレンダーフィード」の URL をコピーして貼り付けてください。")
+                    .font(.caption).foregroundColor(.secondary)
+            }
+
             // MARK: リマインダー設定
             Section {
                 LabeledContent("保存先リスト名") {
@@ -101,5 +143,27 @@ struct SettingsView: View {
         .onChange(of: syncHour)        { _ in onScheduleChanged?() }
         .onChange(of: syncMinute)      { _ in onScheduleChanged?() }
         .onChange(of: syncWeekday)     { _ in onScheduleChanged?() }
+        .onChange(of: feedURLInput)    { _ in feedURLSaved = false }
+    }
+
+    // MARK: - Feed URL
+
+    private func saveFeedURL() {
+        let trimmed = feedURLInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix("https://"), trimmed.contains(".ics") else {
+            feedURLError = "有効な .ics フィード URL を入力してください（https:// で始まる URL）。"
+            feedURLSaved = false
+            return
+        }
+
+        do {
+            try KeychainHelper.saveFeedURL(trimmed)
+            feedURLError = nil
+            feedURLSaved = true
+            onFeedURLSaved?()
+        } catch {
+            feedURLError = error.localizedDescription
+            feedURLSaved = false
+        }
     }
 }

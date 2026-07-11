@@ -3,35 +3,22 @@ import Security
 
 enum KeychainHelper {
     private static let service = "io.github.tada246.klms-to-apple-reminders"
-    private static let tokenAccount  = "api-token"
-    private static let cookieAccount = "canvas-session"
+    private static let feedURLAccount = "ics-feed-url"
 
-    // MARK: - API Token
+    // MARK: - ICS Feed URL
 
-    static func save(_ token: String) throws {
-        try saveItem(token, account: tokenAccount)
+    // Canvas カレンダーフィードの URL は秘密トークンを内包するため Keychain に保存する。
+
+    static func saveFeedURL(_ url: String) throws {
+        try saveItem(url, account: feedURLAccount)
     }
 
-    static func load() -> String? {
-        loadItem(account: tokenAccount)
+    static func loadFeedURL() -> String? {
+        loadItem(account: feedURLAccount)
     }
 
-    static func delete() {
-        deleteItem(account: tokenAccount)
-    }
-
-    // MARK: - Canvas Session Cookie
-
-    static func saveCookie(_ cookieHeader: String) throws {
-        try saveItem(cookieHeader, account: cookieAccount)
-    }
-
-    static func loadCookie() -> String? {
-        loadItem(account: cookieAccount)
-    }
-
-    static func deleteCookie() {
-        deleteItem(account: cookieAccount)
+    static func deleteFeedURL() {
+        deleteItem(account: feedURLAccount)
     }
 
     // MARK: - Private helpers

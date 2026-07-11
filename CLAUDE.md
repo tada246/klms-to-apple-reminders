@@ -41,74 +41,68 @@ xcodebuild -project klms-to-apple-reminders.xcodeproj \
 
 `project.yml`（xcodegen）でプロジェクトを管理している。Swift ファイルはディレクトリスキャンで自動収集されるため、`.xcodeproj` を直接編集しない。新規ファイルを追加したら `xcodegen generate` を実行すること。
 
-**依存フレームワーク**: WebKit のみ（`project.yml` で明示リンク）。サンドボックスは無効（`entitlements` で `app-sandbox = false`）。
+**依存フレームワーク**: EventKit / AppKit / SwiftUI（標準）。WebKit 依存は撤去済み。サンドボックスは無効（`entitlements` で `app-sandbox = false`）。
 
 ## アーキテクチャ概要
 
 ### 全体のデータフロー
 
 ```
-Canvas API (lms.keio.jp)
-    ↓ KLMSClient（Bearer token）
+Canvas カレンダーフィード (.ics, 秘密トークン内包)
+    ↓ ICSFeedClient（Bearer 不要の HTTP GET + 最小 ICS パーサ）
 SyncCoordinator（@MainActor, ObservableObject）
-    ↓ RemindersService（EventKit）
+    ↓ RemindersService（EventKit, UID による重複回避）
 Apple リマインダー
 ```
 
 - **`KLMSToAppleRemindersApp`**: `@main`。WindowGroup を使わず、`AppDelegate` を `@NSApplicationDelegateAdaptor` で使うメニューバー専用構成。
-- **`AppDelegate`**: 全ウィンドウのライフサイクル管理（オンボーディング・ログイン・設定）。`SyncCoordinator` と `SchedulerService` のオーナー。
-- **`SyncCoordinator`**: `@MainActor` の `ObservableObject`。同期状態（`isSyncing`, `lastError`, `isSessionExpired`, `lastLoginDate`）を持ち、UI が購読する。
+- **`AppDelegate`**: 全ウィンドウのライフサイクル管理（オンボーディング・設定）。`SyncCoordinator` と `SchedulerService` のオーナー。
+- **`SyncCoordinator`**: `@MainActor` の `ObservableObject`。同期状態（`isSyncing`, `lastError`, `isConfigured`）を持ち、UI が購読する。
 - **`StatusItemManager`**: `coordinator.objectWillChange` を購読してメニューバーアイコンを更新。
 
-### 認証フロー（最重要）
+### データ取得フロー（最重要）
 
-K-LMS は Keio の SAML/Shibboleth SSO を使っており、Canvas 個人アクセストークンが SSO セッションに紐付いて数時間で失効する。これを解決するため、Bearer トークンと Cookie の二段構成を取る。
+以前は WKWebView で Keio SSO ログイン → Cookie からトークン動的生成 → Bearer で `planner/items` を叩いていたが、SSO セッションが数時間で失効し再ログインが頻発した。現在は **Canvas カレンダーフィード（.ics）URL** に一本化している（移行の経緯は `docs/ics-migration.md`）。
 
 ```
-初回 / 再ログイン:
-  CanvasLoginWindow（WKWebView）で SSO ログイン
-      ↓ WKHTTPCookieStore から canvas_session Cookie を抽出
-  CanvasAuthService.generateToken(cookieHeader:)
-      → POST /api/v1/users/self/tokens（Cookie + X-CSRF-Token ヘッダー）
-      → レスポンスの "token" / "visible_token" フィールドを取得
-  Keychain に token（account: "api-token"）と cookie（account: "canvas-session"）を保存
-  UserDefaults の "lastLoginDate" に Date を記録
+初回設定:
+  ユーザーが Canvas のカレンダーフィード URL を設定画面に貼り付け
+      → KeychainHelper.saveFeedURL()（account: "ics-feed-url"）
+  ※ フィード URL は SSO と独立して長期間有効。ログインは不要。
 
-通常の同期:
-  KeychainHelper.load() → KLMSClient(token:) → fetchAssignments
-
-401（トークン期限切れ）を受け取ったとき（SyncCoordinator.performSync）:
-  CanvasAuthService.silentRefresh()
-    → KeychainHelper.loadCookie() で cookie を取得
-    → 再度 POST /api/v1/users/self/tokens → 成功なら新トークンを Keychain に保存
-  → 成功: リトライ（isRetry: true で無限ループ防止）
-  → 失敗: isSessionExpired = true、onSessionExpired コールバック → AppDelegate がログインウィンドウを表示
+同期（SyncCoordinator.sync → performSync）:
+  KeychainHelper.loadFeedURL()
+      → ICSFeedClient(feedURL:).fetchAssignments(daysAhead:)
+          → .ics を HTTP GET（Bearer 不要）
+          → 最小 ICS パーサで VEVENT を抽出
+          → UID が "event-assignment-" で始まるものだけを Assignment 化
+      → RemindersService.existingUIDs(in:) で既存 UID 集合を取得（完了済みも含む）
+      → 未登録の uid のみ addReminder
+  URL 未設定なら isConfigured=false、onNeedsConfiguration → AppDelegate が設定を開く
 ```
 
-**CSRF トークン**: Canvas は `_csrf_token` Cookie に URL エンコードされた CSRF トークンを入れている。`POST /api/v1/users/self/tokens` の際、URL デコードして `X-CSRF-Token` ヘッダーにセットする必要がある（`CanvasAuthService.extractCSRFToken` 参照）。
+**ICS パーサ**（`ICSFeedClient.swift` 内 `ICSParser`）: 行アンフォールディング、`BEGIN/END:VEVENT` 抽出、`UID`/`SUMMARY`/`DTSTART`/`URL` 取得、ICS エスケープ解除、DTSTART の3形式（末尾 Z の UTC / `VALUE=DATE` 終日 / `TZID` 付き）に対応。SUMMARY 末尾の `[コース名]` を分離。前提とする実 VEVENT サンプルはファイル冒頭コメント参照。
 
-**WKWebView のデータストア**: `WKWebsiteDataStore.default()`（永続ストア）を使っている。Shibboleth の SSO セッションが残っていれば再ログイン時に自動完結するため。非永続ストアに変えると毎回 MFA が必要になる。
+**.ics の制約と対処**: フィードには提出済みフラグが無い。そのため重複回避は Canvas API の `submitted` ではなく **ICS の安定 UID** で行う。リマインダー作成時に notes 末尾へ不可視マーカー `[klms:<uid>]` を埋め、次回同期時に既存リマインダー（**完了済みを含む**）の UID 集合と突き合わせる。完了済みも走査するのは、完了課題が再同期で復活しないようにするため。
 
 ### Keychain のキー構造
 
 | account | 内容 |
 |---|---|
-| `"api-token"` | Canvas Bearer トークン |
-| `"canvas-session"` | Cookie ヘッダー文字列（`name=value; name=value; ...`） |
+| `"ics-feed-url"` | Canvas カレンダーフィード URL（秘密トークンを内包） |
 
-### セッション状態と UI の対応
+### 設定状態と UI の対応
 
-| `isSessionExpired` | アイコン | メニュー |
+| `isConfigured` | アイコン | メニュー |
 |---|---|---|
-| false, syncing | `arrow.clockwise` | 通常 |
-| false, error | `exclamationmark.circle` | 通常 |
-| false, 正常 | `checklist` | 通常 |
-| **true** | **`lock.open.fill`** | **「再ログイン」ボタンが「終了」の上に追加** |
+| true, syncing | `arrow.clockwise` | 通常 |
+| true, error | `exclamationmark.circle` | 通常 |
+| true, 正常 | `checklist` | 通常 |
+| **false（URL 未設定）** | **`exclamationmark.circle`** | **「フィード URL が未設定です」表示＋設定へ誘導** |
 
 ### 並行処理の注意点
 
-- `SyncCoordinator` と `RemindersService` は `@MainActor`。
-- `CanvasLoginWindowController.handleLoginSuccess` は `@MainActor` で宣言し、`Task { @MainActor in ... }` で呼ぶ。
+- `SyncCoordinator` と `RemindersService` は `@MainActor`。`RemindersService` のマーカー用純粋関数（`marker(for:)` / `extractUID(from:)`）は `nonisolated static`。
 - `AppDelegate` のクロージャから `coordinator`（MainActor）を呼ぶときは `Task { @MainActor [weak self] in ... }` が必要。
 
 ### スケジューラ
@@ -117,7 +111,8 @@ K-LMS は Keio の SAML/Shibboleth SSO を使っており、Canvas 個人アク�
 
 ## 既知の注意点
 
-- **`TokenValidator.swift`** は現在コード上では使われていないが、テスト（`TokenValidatorTests`）がまだ存在するため削除しないこと。
-- **テストの `KeychainHelperTests`**: `.setUp`/`.tearDown` でトークンを削除しているが、Cookie のクリーンアップはまだない。Cookie のテストを追加するなら `KeychainHelper.deleteCookie()` を `tearDown` に追加すること。
-- Canvas API のトークン生成レスポンスフィールドは `"token"` か `"visible_token"` の両方を試している（Canvas バージョンによって異なる可能性があるため）。
-- `CanvasLoginWindow` でログイン成功検出は「lms.keio.jp 上 かつ /login を含まない URL に遷移 かつ `canvas_session` Cookie が存在する」で判定。他の Canvas インスタンスでは URL パターンが異なる場合がある。
+- **`ICSFeedClient.swift`** のヘッダコメントに Canvas フィードの実 VEVENT サンプルを記載。将来フォーマットが変わったら実出力と diff してパーサを調整する。
+- **重複回避は UID ベース**。`notes` 末尾の `[klms:<uid>]` マーカーが要。ユーザーが手で作った（マーカー無し）リマインダーは dedup 対象外。
+- **`KeychainHelperTests`** は `.setUp`/`.tearDown` で `KeychainHelper.deleteFeedURL()` を呼ぶ。
+- 課題判定は UID プレフィックス `event-assignment-`（クイズも Canvas ではこの系）。他の Canvas インスタンスでは UID 形式が異なる場合がある。
+- 期間フィルタは `now-1日` 〜 `now+daysAhead日`。過去1日を含めるのは締切直後の未提出課題を取りこぼさないため。

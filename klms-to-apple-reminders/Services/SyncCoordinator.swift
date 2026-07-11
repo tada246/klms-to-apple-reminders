@@ -1,23 +1,22 @@
 import Foundation
 
+// Canvas カレンダーフィード（.ics）を Keychain に保存された URL から直接取得する方式に移行したため、
+// SSO ログイン・トークン失効・自動再ログインといった概念は不要になった。必要なのは URL の有無のみ。
 @MainActor
 class SyncCoordinator: ObservableObject {
     @Published var isSyncing      = false
     @Published var lastResult:    SyncResult?
     @Published var lastError:     String?
-    @Published var isSessionExpired: Bool
-    @Published var lastLoginDate: Date?
+    @Published var isConfigured:  Bool
 
-    /// セッション切れを検知したときに AppDelegate へ通知するコールバック
-    var onSessionExpired: (() -> Void)?
+    /// フィード URL 未設定などで設定画面を開く必要があるときに AppDelegate へ通知するコールバック
+    var onNeedsConfiguration: (() -> Void)?
 
     private let reminders = RemindersService()
     private var settings  = AppSettings()
 
     init() {
-        lastLoginDate    = UserDefaults.standard.object(forKey: "lastLoginDate") as? Date
-        // 起動時にトークンがなければログインが必要
-        isSessionExpired = KeychainHelper.load() == nil
+        isConfigured = KeychainHelper.loadFeedURL() != nil
     }
 
     // MARK: - Public
@@ -25,17 +24,12 @@ class SyncCoordinator: ObservableObject {
     func sync() async {
         guard !isSyncing else { return }
 
-        // トークンがない場合、Cookie があればサイレントリフレッシュで生成を試みる
-        var token = KeychainHelper.load() ?? ""
-        if token.isEmpty {
-            let refreshed = await CanvasAuthService.silentRefresh()
-            token = KeychainHelper.load() ?? ""
-            if !refreshed || token.isEmpty {
-                isSessionExpired = true
-                lastError = "ログインが必要です。メニューから「再ログイン」を選択してください。"
-                onSessionExpired?()
-                return
-            }
+        guard let feedURLString = KeychainHelper.loadFeedURL(),
+              let feedURL = URL(string: feedURLString) else {
+            isConfigured = false
+            lastError = "フィード URL が未設定です。設定から貼り付けてください。"
+            onNeedsConfiguration?()
+            return
         }
 
         isSyncing  = true
@@ -50,29 +44,28 @@ class SyncCoordinator: ObservableObject {
             return
         }
 
-        await performSync(token: token, isRetry: false)
+        await performSync(feedURL: feedURL)
         isSyncing = false
     }
 
-    /// ログイン成功後に呼ぶ。セッション状態を正常に戻す。
-    func notifyLoginSuccess() {
-        lastLoginDate    = UserDefaults.standard.object(forKey: "lastLoginDate") as? Date
-        isSessionExpired = false
-        lastError        = nil
+    /// フィード URL 設定完了後に呼ぶ。設定済み状態に戻す。
+    func notifyConfigured() {
+        isConfigured = true
+        lastError    = nil
     }
 
     // MARK: - Private
 
-    private func performSync(token: String, isRetry: Bool) async {
+    private func performSync(feedURL: URL) async {
         do {
-            let client      = KLMSClient(token: token)
+            let client      = ICSFeedClient(feedURL: feedURL)
             let assignments = try await client.fetchAssignments(daysAhead: settings.daysAhead)
             let list        = try reminders.findOrCreateList(named: settings.listName)
-            let existing    = await reminders.existingTitles(in: list)
+            let existing    = await reminders.existingUIDs(in: list)
 
             var added = 0, skipped = 0
             for assignment in assignments {
-                if assignment.submitted || existing.contains(assignment.title) {
+                if existing.contains(assignment.uid) {
                     skipped += 1
                     continue
                 }
@@ -80,19 +73,8 @@ class SyncCoordinator: ObservableObject {
                 added += 1
             }
 
-            lastResult       = SyncResult(added: added, skipped: skipped, timestamp: Date())
-            isSessionExpired = false
-
-        } catch KLMSError.invalidToken where !isRetry {
-            // トークン期限切れ → Cookie でサイレントリフレッシュを試みる
-            let refreshed = await CanvasAuthService.silentRefresh()
-            if refreshed, let newToken = KeychainHelper.load() {
-                await performSync(token: newToken, isRetry: true)
-            } else {
-                isSessionExpired = true
-                lastError = "セッションが切れています。メニューから「再ログイン」してください。"
-                onSessionExpired?()
-            }
+            lastResult   = SyncResult(added: added, skipped: skipped, timestamp: Date())
+            isConfigured = true
 
         } catch {
             lastError = error.localizedDescription

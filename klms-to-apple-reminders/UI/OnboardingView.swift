@@ -21,7 +21,7 @@ struct OnboardingView: View {
     @AppStorage("launchAtLogin")          private var launchAtLogin: Bool = true
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
 
-    /// 完了時に呼ばれる（AppDelegate がログインウィンドウを開く）
+    /// 完了時に呼ばれる（AppDelegate が設定ウィンドウを開き、フィード URL の貼り付けを促す）
     var onComplete: (() -> Void)?
 
     enum RemindersStatus { case notDetermined, granted, denied }
@@ -79,7 +79,7 @@ struct OnboardingView: View {
                         .buttonStyle(.borderedProminent)
                         .disabled(!canProceed)
                 } else {
-                    Button("K-LMS にログイン →") { complete() }
+                    Button("完了 →") { complete() }
                         .buttonStyle(.borderedProminent)
                 }
             }
@@ -213,7 +213,7 @@ struct OnboardingView: View {
 
             Spacer()
 
-            Text("次の画面でK-LMSにログインすると設定が完了します。")
+            Text("次の画面で Canvas カレンダーフィードの URL を貼り付けると設定が完了します。")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)

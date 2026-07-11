@@ -8,7 +8,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var scheduler:          SchedulerService!
     private var settingsWindow:     NSWindow?
     private var onboardingWindow:   NSWindow?
-    private var loginController:    CanvasLoginWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         coordinator = SyncCoordinator()
@@ -17,13 +16,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         statusItemManager = StatusItemManager(
             coordinator:    coordinator,
-            onOpenSettings: openSettings,
-            onRelogin:      { [weak self] in self?.showLogin(isRelogin: true) }
+            onOpenSettings: openSettings
         )
 
-        // セッション切れ通知 → ログインウィンドウを自動表示
-        coordinator.onSessionExpired = { [weak self] in
-            self?.showLogin(isRelogin: true)
+        // フィード URL 未設定 → 設定ウィンドウを自動表示
+        coordinator.onNeedsConfiguration = { [weak self] in
+            self?.openSettings()
         }
 
         let settings = AppSettings()
@@ -31,9 +29,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             showOnboarding()
         } else {
             startServices(settings: settings)
-            // 起動時にトークンがなければ（初回ログイン未完了）ログインを促す
-            if coordinator.isSessionExpired {
-                showLogin(isRelogin: false)
+            // 起動時にフィード URL が未設定なら設定画面を開いて貼り付けを促す
+            if !coordinator.isConfigured {
+                openSettings()
             }
         }
     }
@@ -45,8 +43,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self?.onboardingWindow?.close()
             self?.onboardingWindow = nil
             self?.startServices(settings: AppSettings())
-            // 設定完了後に K-LMS ログインウィンドウを表示
-            self?.showLogin(isRelogin: false)
+            // 設定完了後にフィード URL 貼り付けを促すため設定画面を表示
+            self?.openSettings()
         }
 
         let hosting = NSHostingController(rootView: view)
@@ -59,35 +57,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         onboardingWindow = window
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
-    }
-
-    // MARK: - Login
-
-    /// WKWebView ログインウィンドウを表示する。
-    /// - Parameter isRelogin: true = 再ログイン（既存セッション切れ）、false = 初回
-    private func showLogin(isRelogin: Bool) {
-        // 既にログインウィンドウが開いている場合は前面に出すだけ
-        if let existing = loginController {
-            existing.window?.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
-            return
-        }
-
-        let controller = CanvasLoginWindowController.present()
-
-        controller.onSuccess = { [weak self] in
-            self?.loginController = nil
-            Task { @MainActor [weak self] in
-                self?.coordinator.notifyLoginSuccess()
-            }
-        }
-
-        controller.onDismiss = { [weak self] in
-            self?.loginController = nil
-            // ウィンドウを閉じてもセッション切れ状態のまま → メニューに再ログインボタン残る
-        }
-
-        loginController = controller
     }
 
     // MARK: - Services
@@ -122,12 +91,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 } else {
                     self?.scheduler.cancel()
                 }
+            }, onFeedURLSaved: { [weak self] in
+                Task { @MainActor [weak self] in
+                    self?.coordinator.notifyConfigured()
+                }
+            }, onSyncNow: { [weak self] in
+                Task { @MainActor [weak self] in
+                    await self?.coordinator.sync()
+                }
             })
             let hosting = NSHostingController(rootView: view)
             let window  = NSWindow(contentViewController: hosting)
             window.title = "K-LMS 設定"
             window.styleMask = [.titled, .closable]
-            window.setContentSize(NSSize(width: 440, height: 360))
+            window.setContentSize(NSSize(width: 440, height: 420))
             window.center()
             window.isReleasedWhenClosed = false
             settingsWindow = window

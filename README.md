@@ -88,9 +88,19 @@ klms-to-apple-reminders/
 │   ├── OnboardingView.swift           # 初回設定ウィザード（2 ステップ）
 │   ├── SettingsView.swift             # 設定画面（フィード URL 入力を含む）
 │   └── StatusItemManager.swift        # メニューバーアイコン管理
-├── Assets.xcassets/                   # アプリアイコン
+├── Assets.xcassets/                   # アプリアイコン（scripts/make-app-icon.swift で生成）
 ├── Info.plist
 └── klms-to-apple-reminders.entitlements
+design/icon/AppIcon-source.png         # アイコンの原画（1024×1024）
+scripts/make-app-icon.swift            # 原画 → macOS テンプレ（角丸・余白・影）→ 10 サイズ書き出し
+```
+
+### アイコンを作り直すとき
+
+Figma などで 1024×1024 の正方形の原画を書き出して `design/icon/AppIcon-source.png` を差し替え、リポジトリのルートで次を実行します（角丸・余白・影・全サイズ書き出しはスクリプトが行います）。
+
+```bash
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun swift scripts/make-app-icon.swift
 ```
 
 設計メモは `docs/` を参照（`ics-migration.md`: ICS 方式へ移行した経緯、`design-issues-4-5-7.md`: イシュー対応の設計書）。

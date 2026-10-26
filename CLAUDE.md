@@ -41,6 +41,8 @@ xcodebuild -project klms-to-apple-reminders.xcodeproj \
 
 `project.yml`（xcodegen）でプロジェクトを管理している。Swift ファイルはディレクトリスキャンで自動収集されるため、`.xcodeproj` を直接編集しない。新規ファイルを追加したら `xcodegen generate` を実行すること。
 
+**アプリアイコン**: `Assets.xcassets/AppIcon.appiconset` の PNG は手で編集しない。原画 `design/icon/AppIcon-source.png`（1024×1024）から `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun swift scripts/make-app-icon.swift` で生成する（`swiftly` の swift には CoreGraphics が無いので Xcode の swift を使う）。
+
 **依存フレームワーク**: EventKit / AppKit / SwiftUI（標準）。WebKit 依存は撤去済み。サンドボックスは無効（`entitlements` で `app-sandbox = false`）。
 
 ## アーキテクチャ概要

@@ -78,7 +78,7 @@ final class ICSFeedClientTests: XCTestCase {
     }
 
     func testParseAssignmentsMapsFields() {
-        let a = ICSFeedClient.parseAssignments(from: feed)[0]
+        guard let a = ICSFeedClient.parseAssignments(from: feed).first else { return XCTFail("課題が抽出されていない") }
         XCTAssertEqual(a.title, "課題A")
         XCTAssertEqual(a.courseName, "コースA")
         XCTAssertEqual(a.dueAt, utc(2026, 7, 15, 14, 59))
@@ -87,7 +87,7 @@ final class ICSFeedClientTests: XCTestCase {
     }
 
     func testParseAssignmentsMarksAllDay() {
-        XCTAssertTrue(ICSFeedClient.parseAssignments(from: feed)[1].isAllDay)
+        XCTAssertEqual(ICSFeedClient.parseAssignments(from: feed).map(\.isAllDay), [false, true])
     }
 
     func testParseAssignmentsDoesNotApplyWindow() {

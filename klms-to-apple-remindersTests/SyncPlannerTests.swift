@@ -124,10 +124,11 @@ final class SyncPlannerTests: XCTestCase {
         let old = assignment(1, due: days(5))
         let new = assignment(1, due: days(8))
         let p = plan(feed: [new], records: [record(for: old)], snapshots: snapshot(old))
+        guard let update = p.updates.first else { return XCTFail("更新が計画されていない") }
         XCTAssertEqual(p.updates.count, 1)
-        XCTAssertEqual(p.updates[0].fields, [.due])
-        XCTAssertEqual(p.updates[0].recordID, "rec-event-assignment-1")
-        XCTAssertEqual(p.updates[0].assignment, new)
+        XCTAssertEqual(update.fields, [.due])
+        XCTAssertEqual(update.recordID, "rec-event-assignment-1")
+        XCTAssertEqual(update.assignment, new)
         XCTAssertEqual(p.snapshots["1"], SyncedFields(assignment: new))
     }
 

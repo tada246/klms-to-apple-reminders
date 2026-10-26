@@ -2,7 +2,7 @@
 
 - 対象ブランチ: `feat/ics-feed-migration`（main より先行、未 push、PR なし）
 - 作成日: 2026-10-26
-- ステータス: **実装中**（方針確定: **ICS only**。Canvas API・トークンは導入しない → #4 は実装対象外、§4）
+- ステータス: **実装済み**（#7・#5 を実装。方針は **ICS only** で Canvas API・トークンは導入しないため #4 は対象外 → §4）。検証結果は §12
 
 ## 1. 要約
 
@@ -60,7 +60,7 @@ SnapshotStore ──► [assignmentID: SyncedSnapshot]
         SyncPlanner.plan(...)  ← 純粋関数。ここに全ロジック
                     │
                     ▼
-              [SyncAction]  = add / update(fields) / seed
+              SyncPlan  = adds / updates(fields) / snapshots
                     │
                     ▼
    RemindersService.apply(plan)  ← EventKit を触るのはここだけ（1 件ずつ commit。失敗を他の課題へ波及させないため）
@@ -104,16 +104,18 @@ struct ReminderRecord {            // EKReminder の値スナップショット
     let isCompleted: Bool
 }
 
-struct SyncedSnapshot: Codable {   // 前回同期で「Canvas 由来として書いた/確認した」値
+struct SyncedFields: Codable, Equatable {   // F / R / S のいずれにも使う。notes は空 → nil に正規化
     var title: String
     var dueKey: String?
     var notes: String?
 }
 
-enum SyncAction {
-    case add(Assignment)
-    case update(recordID: String, assignmentID: String, changes: FieldChanges)
-    case seed(assignmentID: String, SyncedSnapshot)   // スナップショットだけ更新
+struct SyncPlan {                  // SyncPlanner.plan の出力
+    var adds: [Assignment]
+    var updates: [ReminderUpdate]  // recordID / assignment / fields: Set<SyncField>（.title / .due / .notes）
+    var snapshots: [String: SyncedFields]   // 全成功時の同期後スナップショット。失敗 ID は finalSnapshots で前回値に戻す
+    var unchanged: Int
+    var skippedWithoutID: Int
 }
 ```
 
@@ -210,3 +212,26 @@ enum SyncAction {
 4. `check_token.py` は削除（`.env` は触らない。中身も読まない）。
 5. コミットはローカルのみ。push／PR／PR #6／イシューコメントの扱いは完了後に相談。
 6. `/Applications` への差し替えは最後に実施。
+
+## 12. 検証結果（2026-10-26）
+
+| 項目 | 結果 |
+|---|---|
+| 単体テスト | **13 → 104 件、全通過**（ICS パーサ 29 / フィード取得 11 / SyncPlanner 32 / DueKey・SnapshotStore・値変換 19 / 既存 13） |
+| テストの有効性 | 判定ロジックを 2 か所わざと壊して実行 → 8 件が失敗することを確認し、元に戻した |
+| Release ビルド | 成功（プロジェクト由来の警告なし）。`AppIcon.icns` に全サイズが入っている |
+| `/Applications` 差し替え・起動 | 成功。プロセス生存、起動時クラッシュなし。ログイン項目の URL が `/Applications` を指す |
+| アイコン | 生成した 1024px / 32px を目視確認（角丸・余白・影あり、小サイズでも潰れない） |
+
+### 実装中に見つけて直した問題
+
+- **テストが本番の Keychain 項目を削除していた**: `KeychainHelperTests` の `setUp`/`tearDown` が本番と同じ service 名の `ics-feed-url` を消していた。XCTest 実行中は別の service 名（`klms-to-apple-reminders.tests`）を使うようにし、本番名のダミー項目がテスト後も残ることを確認した。
+- **テストホストがログイン項目を登録していた**: テストはアプリ本体をホストにするため、`applicationDidFinishLaunching` が走って `/tmp` の Debug ビルドが `SMAppService` に登録されていた。XCTest 実行中は起動処理をスキップするようにした（既存の登録は `/Applications` 版の起動で上書きされた）。
+- `DateFormatter` にロケールを固定していなかった（和暦などの端末設定で ICS の日時が崩れうる）。
+- 取得が既定の HTTP キャッシュを使っていた（更新を取りこぼしうる）。
+- `existingAssignmentIDs` は読み込み失敗を空配列として扱っていた（全課題を二重追加しうる）。nil を返して同期を中止するようにした。
+
+### 未検証（実機での確認が必要）
+
+- 実際のフィード URL と実際の Apple リマインダーでの end-to-end（リマインダー権限の許可と、フィード URL の再設定が必要）。EventKit への書き込み（`apply`）は単体テストの対象外で、判定ロジック（`SyncPlanner`）とのつなぎ込みは未確認。
+- 確認手順: ① 設定画面にフィード URL を貼って「今すぐ同期」→ 追加される ② 2 回目の同期 → 「追加0・更新0」 ③ リマインダーの締切を手で変更して再同期 → 維持される ④ Canvas 側で締切が変わった課題 → リマインダーの締切が更新される。

@@ -51,7 +51,7 @@ final class ICSParserTests: XCTestCase {
     func testParseVEventsExtractsFields() {
         let events = ICSParser.parseVEvents(from: sampleFeed)
         XCTAssertEqual(events.count, 1)
-        let e = events[0]
+        guard let e = events.first else { return XCTFail("VEVENT が抽出されていない") }
         XCTAssertEqual(e.uid, "event-assignment-123456@lms.keio.jp")
         XCTAssertEqual(e.summary, "レポート課題1 [情報基礎論]")
         XCTAssertEqual(e.dtStart, utc(2026, 7, 15, 14, 59))
@@ -82,7 +82,7 @@ final class ICSParserTests: XCTestCase {
 
     func testParseVEventsMarksAllDay() {
         let text = "BEGIN:VEVENT\nUID:a\nDTSTART;VALUE=DATE:20260720\nEND:VEVENT\n"
-        let e = ICSParser.parseVEvents(from: text)[0]
+        guard let e = ICSParser.parseVEvents(from: text).first else { return XCTFail("VEVENT が抽出されていない") }
         XCTAssertTrue(e.isAllDay)
         XCTAssertEqual(e.dtStart, local(2026, 7, 20))
     }

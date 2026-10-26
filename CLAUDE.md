@@ -51,7 +51,7 @@ xcodebuild -project klms-to-apple-reminders.xcodeproj \
 Canvas カレンダーフィード (.ics, 秘密トークン内包)
     ↓ ICSFeedClient（Bearer 不要の HTTP GET + 最小 ICS パーサ）
 SyncCoordinator（@MainActor, ObservableObject）
-    ↓ RemindersService（EventKit, UID による重複回避）
+    ↓ RemindersService（EventKit, 課題 ID による重複回避）
 Apple リマインダー
 ```
 
@@ -76,14 +76,14 @@ Apple リマインダー
           → .ics を HTTP GET（Bearer 不要）
           → 最小 ICS パーサで VEVENT を抽出
           → UID が "event-assignment-" で始まるものだけを Assignment 化
-      → RemindersService.existingUIDs(in:) で既存 UID 集合を取得（完了済みも含む）
-      → 未登録の uid のみ addReminder
+      → RemindersService.existingAssignmentIDs(in:) で既存の課題 ID 集合を取得（完了済みも含む）
+      → 未登録の課題 ID のみ addReminder
   URL 未設定なら isConfigured=false、onNeedsConfiguration → AppDelegate が設定を開く
 ```
 
 **ICS パーサ**（`ICSFeedClient.swift` 内 `ICSParser`）: 行アンフォールディング、`BEGIN/END:VEVENT` 抽出、`UID`/`SUMMARY`/`DTSTART`/`URL` 取得、ICS エスケープ解除、DTSTART の3形式（末尾 Z の UTC / `VALUE=DATE` 終日 / `TZID` 付き）に対応。SUMMARY 末尾の `[コース名]` を分離。前提とする実 VEVENT サンプルはファイル冒頭コメント参照。
 
-**.ics の制約と対処**: フィードには提出済みフラグが無い。そのため重複回避は Canvas API の `submitted` ではなく **ICS の安定 UID** で行う。リマインダー作成時に notes 末尾へ不可視マーカー `[klms:<uid>]` を埋め、次回同期時に既存リマインダー（**完了済みを含む**）の UID 集合と突き合わせる。完了済みも走査するのは、完了課題が再同期で復活しないようにするため。
+**.ics の制約と対処**: フィードには提出済みフラグが無い（提出で自動完了にはできない。ICS only 方針のため Canvas API・トークンは使わない）。そのため重複回避は Canvas API の `submitted` ではなく **課題の数値 ID** で行う。UID（`event-assignment-1269269`）とリマインダーの `url`（`…/assignments/1269269`）の両方から同じ ID を正規表現で取り出して突き合わせる（`RemindersService.assignmentID(...)`）。notes にマーカーは埋めない（`eaa7b0f` で廃止）。既存リマインダーは **完了済みを含めて** 走査する。完了課題が再同期で復活しないようにするため。
 
 ### Keychain のキー構造
 
@@ -102,7 +102,7 @@ Apple リマインダー
 
 ### 並行処理の注意点
 
-- `SyncCoordinator` と `RemindersService` は `@MainActor`。`RemindersService` のマーカー用純粋関数（`marker(for:)` / `extractUID(from:)`）は `nonisolated static`。
+- `SyncCoordinator` と `RemindersService` は `@MainActor`。`RemindersService` の ID 抽出用純粋関数（`assignmentID(in:)` / `assignmentID(fromUID:)` / `assignmentID(from:)`）は `nonisolated static`。
 - `AppDelegate` のクロージャから `coordinator`（MainActor）を呼ぶときは `Task { @MainActor [weak self] in ... }` が必要。
 
 ### スケジューラ
@@ -112,7 +112,8 @@ Apple リマインダー
 ## 既知の注意点
 
 - **`ICSFeedClient.swift`** のヘッダコメントに Canvas フィードの実 VEVENT サンプルを記載。将来フォーマットが変わったら実出力と diff してパーサを調整する。
-- **重複回避は UID ベース**。`notes` 末尾の `[klms:<uid>]` マーカーが要。ユーザーが手で作った（マーカー無し）リマインダーは dedup 対象外。
-- **`KeychainHelperTests`** は `.setUp`/`.tearDown` で `KeychainHelper.deleteFeedURL()` を呼ぶ。
+- **重複回避は課題 ID ベース**。リマインダーの `url` に課題 ID が入っていることが前提。ユーザーが手で作った（課題 URL を持たない）リマインダーは dedup 対象外。
+- **`KeychainHelperTests`** は `.setUp`/`.tearDown` で `KeychainHelper.deleteFeedURL()` を呼ぶ。`RemindersServiceTests` は課題 ID 抽出（純粋関数）のみを検証し、EventKit には触れない。
+- ユーザーが削除したリマインダーは次回同期で復活する（完了済みは復活しない）。
 - 課題判定は UID プレフィックス `event-assignment-`（クイズも Canvas ではこの系）。他の Canvas インスタンスでは UID 形式が異なる場合がある。
 - 期間フィルタは `now-1日` 〜 `now+daysAhead日`。過去1日を含めるのは締切直後の未提出課題を取りこぼさないため。

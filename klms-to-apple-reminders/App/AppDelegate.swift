@@ -10,6 +10,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var onboardingWindow:   NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // ユニットテストはこのアプリをホストとして実行される。ここで起動処理を進めると、
+        // テスト用ビルドがログイン項目に登録されたり、設定ウィンドウが開いたりしてしまう。
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil { return }
+
         coordinator = SyncCoordinator()
         scheduler   = SchedulerService()
         scheduler.coordinator = coordinator

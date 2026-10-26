@@ -2,7 +2,13 @@ import Foundation
 import Security
 
 enum KeychainHelper {
-    private static let service = "klms-to-apple-reminders"
+    /// XCTest 実行中は別の service 名を使う。テストの setUp/tearDown は `deleteFeedURL()` を呼ぶので、
+    /// 本番と同じ項目を使うと、開発機でテストを回すたびにユーザーのフィード URL を消してしまう。
+    private static let service: String = {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+            ? "klms-to-apple-reminders.tests"
+            : "klms-to-apple-reminders"
+    }()
     private static let feedURLAccount = "ics-feed-url"
 
     // MARK: - ICS Feed URL

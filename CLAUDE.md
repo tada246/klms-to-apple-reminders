@@ -130,7 +130,7 @@ Canvas 側で課題が変わったら、対応するリマインダーのタイ�
 
 - **`ICSFeedClient.swift`** のヘッダコメントに Canvas フィードの実 VEVENT サンプルを記載。将来フォーマットが変わったら実出力と diff してパーサを調整する。
 - **重複回避は課題 ID ベース**。リマインダーの `url` に課題 ID が入っていることが前提。ユーザーが手で作った（課題 URL を持たない）リマインダーは dedup 対象外。
-- **`KeychainHelperTests`** は `.setUp`/`.tearDown` で `KeychainHelper.deleteFeedURL()` を呼ぶ。`RemindersServiceTests` は課題 ID 抽出（純粋関数）のみを検証し、EventKit には触れない。
+- **`KeychainHelperTests`** は `.setUp`/`.tearDown` で `KeychainHelper.deleteFeedURL()` を呼ぶ。XCTest 実行中（環境変数 `XCTestConfigurationFilePath` あり）は Keychain の service 名が `klms-to-apple-reminders.tests` に切り替わるので、本番のフィード URL は消えない。同じ判定で `AppDelegate.applicationDidFinishLaunching` も何もせず戻る（テストホストがログイン項目に登録されたり設定ウィンドウが開いたりするのを防ぐため）。`RemindersServiceTests` は課題 ID 抽出（純粋関数）のみを検証し、EventKit には触れない。
 - ユーザーが削除したリマインダーは次回同期で復活する（完了済みは復活しない）。
 - 課題判定は UID プレフィックス `event-assignment-`（クイズも Canvas ではこの系）。他の Canvas インスタンスでは UID 形式が異なる場合がある。
 - 期間フィルタは `now-1日` 〜 `now+daysAhead日`（新規追加のみ）。過去1日を含めるのは締切直後の未提出課題を取りこぼさないため。

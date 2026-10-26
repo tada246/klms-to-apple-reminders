@@ -17,6 +17,7 @@
 		8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */; };
 		971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9426FE520EAE131785044B /* SyncCoordinator.swift */; };
 		AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6641E190882834685560A13E /* KeychainHelperTests.swift */; };
+		BAFE303DC23368442492FF82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */; };
 		CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818DFB44D6DF41D8C5628EB9 /* Assignment.swift */; };
 		D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2A049CFADEADDDACFB512 /* SettingsView.swift */; };
 		D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */; };
@@ -37,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		050C502AB04744DA84179076 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		1396A859A64078B70C5F5E32 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		14C6157C5622A646BACC8BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 		501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */ = {
 			isa = PBXGroup;
 			children = (
+				06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */,
 				14C6157C5622A646BACC8BE7 /* Info.plist */,
 				2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */,
 				F1B3BEC41909CB57A574B2E0 /* App */,
@@ -175,6 +178,7 @@
 			buildConfigurationList = 3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */;
 			buildPhases = (
 				CCADCB377F75423BF13EEE6A /* Sources */,
+				3F062334BC27E9CE43502627 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -225,6 +229,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3F062334BC27E9CE43502627 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAFE303DC23368442492FF82 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CCADCB377F75423BF13EEE6A /* Sources */ = {

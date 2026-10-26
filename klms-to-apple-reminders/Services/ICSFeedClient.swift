@@ -44,17 +44,26 @@ enum ICSFeedError: Error, LocalizedError {
 /// Bearer トークン不要。URL に内包された秘密トークンで認証される。
 struct ICSFeedClient {
     private let feedURL: URL
+    private let session: URLSession
 
-    init(feedURL: URL) {
+    /// `session` はテストでスタブ（URLProtocol）を差し込むための注入点。
+    init(feedURL: URL, session: URLSession = .shared) {
         self.feedURL = feedURL
+        self.session = session
     }
 
-    /// フィードを取得し、`daysAhead` 日以内が締切の課題を返す。
-    func fetchAssignments(daysAhead: Int) async throws -> [Assignment] {
+    /// フィードを取得し、課題（クイズ含む）を **期間フィルタなしで全件** 返す。
+    ///
+    /// 期間フィルタをここでかけないのは、締切が期間の外へ動いた課題でも、既にリマインダーがあれば
+    /// 更新対象にする必要があるため。期間は新規追加の判定にだけ使う（`window(daysAhead:)`）。
+    func fetchAllAssignments() async throws -> [Assignment] {
+        // 更新を取りこぼさないよう、ローカルの HTTP キャッシュは使わない。
+        let request = URLRequest(url: feedURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await URLSession.shared.data(from: feedURL)
+            (data, response) = try await session.data(for: request)
         } catch {
             throw ICSFeedError.networkError(error)
         }
@@ -70,29 +79,27 @@ struct ICSFeedClient {
             throw ICSFeedError.parseError
         }
 
-        let events = ICSParser.parseVEvents(from: text)
+        return Self.parseAssignments(from: text)
+    }
 
-        let now = Date()
-        let calendar = Calendar.current
-        guard let lowerBound = calendar.date(byAdding: .day, value: -1, to: now),
-              let upperBound = calendar.date(byAdding: .day, value: daysAhead, to: now) else {
-            throw ICSFeedError.parseError
-        }
+    /// フィードを取得し、`daysAhead` 日以内が締切の課題だけを返す。
+    func fetchAssignments(daysAhead: Int) async throws -> [Assignment] {
+        let all = try await fetchAllAssignments()
+        return Self.filter(all, daysAhead: daysAhead, now: Date())
+    }
 
+    /// .ics 全文から課題を取り出す（純粋関数。期間フィルタなし）。
+    static func parseAssignments(from text: String) -> [Assignment] {
         var assignments: [Assignment] = []
-        for event in events {
+        for event in ICSParser.parseVEvents(from: text) {
             // 課題（クイズ含む）は UID が "event-assignment-" で始まる。
             // それ以外（カレンダーイベント等）は同期対象外なので無視する。
             guard event.uid.hasPrefix("event-assignment-") else { continue }
 
+            // 締切が無い課題はリマインダーにできないので無視する。
             guard let dueAt = event.dtStart else { continue }
 
-            // 過去1日〜未来 daysAhead 日の範囲でフィルタ。
-            // 過去1日を含めるのは、締切直後で未提出の課題を取りこぼさないため。
-            guard dueAt >= lowerBound && dueAt <= upperBound else { continue }
-
             let (title, courseName) = ICSParser.splitTitleAndCourse(from: event.summary ?? "")
-
             let url = ICSParser.assignmentPageURL(rawURL: event.url, uid: event.uid)
 
             assignments.append(
@@ -107,13 +114,35 @@ struct ICSFeedClient {
                 )
             )
         }
-
         return assignments
+    }
+
+    /// 新規追加の対象にする締切の範囲: 過去1日〜未来 `daysAhead` 日。
+    /// 過去1日を含めるのは、締切直後で未提出の課題を取りこぼさないため。
+    static func window(daysAhead: Int, now: Date, calendar: Calendar = .current) -> ClosedRange<Date> {
+        let lower = calendar.date(byAdding: .day, value: -1, to: now) ?? now.addingTimeInterval(-86_400)
+        let upper = calendar.date(byAdding: .day, value: daysAhead, to: now)
+            ?? now.addingTimeInterval(Double(daysAhead) * 86_400)
+        return lower...upper
+    }
+
+    static func filter(
+        _ assignments: [Assignment],
+        daysAhead: Int,
+        now: Date,
+        calendar: Calendar = .current
+    ) -> [Assignment] {
+        let range = window(daysAhead: daysAhead, now: now, calendar: calendar)
+        return assignments.filter { assignment in
+            guard let due = assignment.dueAt else { return false }
+            return range.contains(due)
+        }
     }
 }
 
 /// 最小限の ICS (RFC5545) パーサ。Canvas が出力するカレンダーフィードのパースに必要な範囲のみ対応する。
-private enum ICSParser {
+/// テストから直接呼ぶため internal にしている。
+enum ICSParser {
     struct VEventRaw {
         let uid: String
         let summary: String?
@@ -276,33 +305,29 @@ private enum ICSParser {
     static func parseDate(value: String, params: [String: String]) -> Date? {
         // a) 終日: DTSTART;VALUE=DATE:20260715 → その日の 00:00 として扱う。
         if params["VALUE"]?.uppercased() == "DATE" {
-            var calendar = Calendar(identifier: .gregorian)
-            calendar.timeZone = TimeZone.current
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMdd"
-            formatter.timeZone = TimeZone.current
-            formatter.calendar = calendar
-            return formatter.date(from: value)
+            return makeFormatter("yyyyMMdd", timeZone: .current).date(from: value)
         }
 
         // b) 末尾 Z の UTC: DTSTART:20260715T145900Z
         if value.hasSuffix("Z") {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
-            formatter.timeZone = TimeZone(identifier: "UTC")
-            return formatter.date(from: value)
+            return makeFormatter("yyyyMMdd'T'HHmmss'Z'", timeZone: TimeZone(identifier: "UTC")!).date(from: value)
         }
 
         // c) TZID 付きローカル時刻: DTSTART;TZID=Asia/Tokyo:20260715T235900
         // TimeZone(identifier:) で解釈できなければ端末ローカルタイムゾーンにフォールバックする。
+        let timeZone = params["TZID"].flatMap { TimeZone(identifier: $0) } ?? .current
+        return makeFormatter("yyyyMMdd'T'HHmmss", timeZone: timeZone).date(from: value)
+    }
+
+    /// ICS の日時は常にグレゴリオ暦・西暦・24 時間表記。端末のロケールや暦（和暦など）の設定に
+    /// 左右されないよう、`en_US_POSIX` とグレゴリオ暦を明示する。
+    private static func makeFormatter(_ format: String, timeZone: TimeZone) -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd'T'HHmmss"
-        if let tzid = params["TZID"], let tz = TimeZone(identifier: tzid) {
-            formatter.timeZone = tz
-        } else {
-            formatter.timeZone = TimeZone.current
-        }
-        return formatter.date(from: value)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)   // timeZone より先に設定する（calendar の差し替えで tz が上書きされるため）
+        formatter.timeZone = timeZone
+        formatter.dateFormat = format
+        return formatter
     }
 
     /// Canvas の SUMMARY は「課題名 [[時限]教員名　コース名 [キャンパス 教室]]」形式。

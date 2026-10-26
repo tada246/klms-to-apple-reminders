@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		019025A90EDD3216331FBE6F /* RemindersServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8632E3A32FE023AC61D3CD5 /* RemindersServiceTests.swift */; };
 		0E2930F16FE7BCA1ECB5FD05 /* ICSFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A8E9E67655D756BC5DF615 /* ICSFeedClient.swift */; };
+		1D961229FA1F104A5EF41E31 /* ICSParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E689BECB9C035F9FA15FE8F5 /* ICSParserTests.swift */; };
 		201054C8E6F5C2BD3D74BC81 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */; };
 		2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396A859A64078B70C5F5E32 /* AppSettings.swift */; };
 		68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */; };
@@ -17,6 +18,7 @@
 		8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */; };
 		971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9426FE520EAE131785044B /* SyncCoordinator.swift */; };
 		AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6641E190882834685560A13E /* KeychainHelperTests.swift */; };
+		B52399C4AA82ECF98DC4570E /* ICSFeedClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E285F084035C944955524 /* ICSFeedClientTests.swift */; };
 		BAFE303DC23368442492FF82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */; };
 		CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818DFB44D6DF41D8C5628EB9 /* Assignment.swift */; };
 		D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2A049CFADEADDDACFB512 /* SettingsView.swift */; };
@@ -44,6 +46,7 @@
 		14C6157C5622A646BACC8BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		23E2A049CFADEADDDACFB512 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "klms-to-apple-reminders.entitlements"; sourceTree = "<group>"; };
+		3A0E285F084035C944955524 /* ICSFeedClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICSFeedClientTests.swift; sourceTree = "<group>"; };
 		3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSToAppleRemindersApp.swift; sourceTree = "<group>"; };
 		5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
 		5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
@@ -55,6 +58,7 @@
 		9905C9D28C544F863FA867D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF9426FE520EAE131785044B /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
 		B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
+		E689BECB9C035F9FA15FE8F5 /* ICSParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICSParserTests.swift; sourceTree = "<group>"; };
 		E8632E3A32FE023AC61D3CD5 /* RemindersServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersServiceTests.swift; sourceTree = "<group>"; };
 		E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klms-to-apple-reminders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9DAA67BD1A554AC8447F39D /* klms-to-apple-remindersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "klms-to-apple-remindersTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,6 +97,8 @@
 		3BC1D91CC53F784F6DCFC1BA /* klms-to-apple-remindersTests */ = {
 			isa = PBXGroup;
 			children = (
+				3A0E285F084035C944955524 /* ICSFeedClientTests.swift */,
+				E689BECB9C035F9FA15FE8F5 /* ICSParserTests.swift */,
 				6641E190882834685560A13E /* KeychainHelperTests.swift */,
 				E8632E3A32FE023AC61D3CD5 /* RemindersServiceTests.swift */,
 			);
@@ -267,6 +273,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B52399C4AA82ECF98DC4570E /* ICSFeedClientTests.swift in Sources */,
+				1D961229FA1F104A5EF41E31 /* ICSParserTests.swift in Sources */,
 				AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */,
 				019025A90EDD3216331FBE6F /* RemindersServiceTests.swift in Sources */,
 			);

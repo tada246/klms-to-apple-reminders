@@ -12,9 +12,11 @@ struct MenuBarView: View {
             Divider()
             actions
         }
-        .frame(width: 240)
+        .frame(width: 260)
         .padding(.vertical, 4)
     }
+
+    // MARK: - Header
 
     private var header: some View {
         HStack {
@@ -28,23 +30,46 @@ struct MenuBarView: View {
         .padding(.vertical, 8)
     }
 
+    // MARK: - Status
+
     private var statusSection: some View {
         VStack(alignment: .leading, spacing: 4) {
+            // 同期状態
             if coordinator.isSyncing {
                 HStack(spacing: 6) {
                     ProgressView().controlSize(.small)
                     Text("同期中...").font(.caption).foregroundColor(.secondary)
                 }
+            } else if !coordinator.isConfigured {
+                HStack(alignment: .top, spacing: 4) {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundColor(.orange)
+                        .font(.caption)
+                    Text("フィード URL が未設定です。設定から貼り付けてください。")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             } else if let error = coordinator.lastError {
                 HStack(alignment: .top, spacing: 4) {
-                    Image(systemName: "exclamationmark.circle.fill").foregroundColor(.red).font(.caption)
-                    Text(error).font(.caption).foregroundColor(.red).fixedSize(horizontal: false, vertical: true)
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             } else if let result = coordinator.lastResult {
                 Text("最終同期: \(result.formattedTime)")
                     .font(.caption).foregroundColor(.secondary)
                 Text(result.summary)
                     .font(.caption2).foregroundColor(.secondary)
+                if let warning = coordinator.lastWarning {
+                    Text(warning)
+                        .font(.caption2).foregroundColor(.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             } else {
                 Text("未同期").font(.caption).foregroundColor(.secondary)
             }
@@ -52,6 +77,8 @@ struct MenuBarView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
     }
+
+    // MARK: - Actions
 
     private var actions: some View {
         VStack(spacing: 0) {
@@ -72,7 +99,14 @@ struct MenuBarView: View {
         }
     }
 
-    private func menuButton(title: String, icon: String, foregroundColor: Color = .primary, action: @escaping () -> Void) -> some View {
+    // MARK: - Helpers
+
+    private func menuButton(
+        title: String,
+        icon: String,
+        foregroundColor: Color = .primary,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             HStack {
                 Image(systemName: icon).frame(width: 16)
@@ -85,10 +119,11 @@ struct MenuBarView: View {
         .foregroundColor(foregroundColor)
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
-        .background(Color.clear)
         .hoverBackground()
     }
 }
+
+// MARK: - Hover background
 
 private extension View {
     func hoverBackground() -> some View {

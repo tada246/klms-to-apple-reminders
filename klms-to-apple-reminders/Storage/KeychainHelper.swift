@@ -2,23 +2,47 @@ import Foundation
 import Security
 
 enum KeychainHelper {
-    private static let service = "io.github.tada246.klms-to-apple-reminders"
-    private static let account = "api-token"
+    /// XCTest 実行中は別の service 名を使う。テストの setUp/tearDown は `deleteFeedURL()` を呼ぶので、
+    /// 本番と同じ項目を使うと、開発機でテストを回すたびにユーザーのフィード URL を消してしまう。
+    private static let service: String = {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+            ? "klms-to-apple-reminders.tests"
+            : "klms-to-apple-reminders"
+    }()
+    private static let feedURLAccount = "ics-feed-url"
 
-    static func save(_ token: String) throws {
-        let data = Data(token.utf8)
+    // MARK: - ICS Feed URL
+
+    // Canvas カレンダーフィードの URL は秘密トークンを内包するため Keychain に保存する。
+
+    static func saveFeedURL(_ url: String) throws {
+        try saveItem(url, account: feedURLAccount)
+    }
+
+    static func loadFeedURL() -> String? {
+        loadItem(account: feedURLAccount)
+    }
+
+    static func deleteFeedURL() {
+        deleteItem(account: feedURLAccount)
+    }
+
+    // MARK: - Private helpers
+
+    private static func saveItem(_ value: String, account: String) throws {
+        let data = Data(value.utf8)
         let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
+            kSecClass:        kSecClassGenericPassword,
+            kSecAttrService:  service,
+            kSecAttrAccount:  account,
         ]
         SecItemDelete(query as CFDictionary)
 
         let attributes: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
-            kSecValueData: data,
+            kSecClass:        kSecClassGenericPassword,
+            kSecAttrService:  service,
+            kSecAttrAccount:  account,
+            kSecValueData:    data,
         ]
         let status = SecItemAdd(attributes as CFDictionary, nil)
         guard status == errSecSuccess else {
@@ -26,13 +50,13 @@ enum KeychainHelper {
         }
     }
 
-    static func load() -> String? {
+    private static func loadItem(account: String) -> String? {
         let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
-            kSecReturnData: true,
-            kSecMatchLimit: kSecMatchLimitOne,
+            kSecClass:        kSecClassGenericPassword,
+            kSecAttrService:  service,
+            kSecAttrAccount:  account,
+            kSecReturnData:   true,
+            kSecMatchLimit:   kSecMatchLimitOne,
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
@@ -40,14 +64,16 @@ enum KeychainHelper {
         return String(data: data, encoding: .utf8)
     }
 
-    static func delete() {
+    private static func deleteItem(account: String) {
         let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
+            kSecClass:       kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: account,
         ]
         SecItemDelete(query as CFDictionary)
     }
+
+    // MARK: - Error
 
     enum KeychainError: Error, LocalizedError {
         case saveFailed(OSStatus)

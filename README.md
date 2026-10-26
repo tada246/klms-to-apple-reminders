@@ -57,6 +57,7 @@ Canvas（K-LMS）→ **カレンダー** → 画面の隅にある **「カレ�
 | ログイン不要 | カレンダーフィード URL を貼るだけ。SSO・Cookie・トークンは使わない |
 | 自動同期 | 毎時間 / 毎日（時刻指定）/ 毎週（曜日・時刻指定） |
 | 重複スキップ | 追加済みの課題（完了済み含む）は追加しない |
+| 更新の反映 | Canvas 側で締切・タイトル・コース名が変わったら、追加済みのリマインダーも更新する。リマインダーを手で編集した項目は上書きしない（ただし締切だけは Canvas が変わったら Canvas を優先）。完了済みは変更しない |
 | リスト自動作成 | 指定リストが存在しない場合は自動で作成 |
 | 期間指定 | 過去 1 日〜指定日数先（既定 30 日）の課題を対象にする |
 | ログイン時起動 | macOS ログイン時に自動起動（デフォルト ON） |
@@ -70,15 +71,18 @@ klms-to-apple-reminders/
 │   └── AppDelegate.swift              # 起動・サービス管理・ウィンドウ制御
 ├── Models/
 │   ├── Assignment.swift               # 課題モデル
+│   ├── SyncModels.swift               # 同期の値型（SyncedFields / ReminderRecord / SyncPlan / DueKey）
 │   └── SyncResult.swift               # 同期結果モデル
 ├── Services/
 │   ├── ICSFeedClient.swift            # .ics 取得 + 最小 ICS パーサ
-│   ├── RemindersService.swift         # EventKit 連携・課題 ID による重複判定
+│   ├── RemindersService.swift         # EventKit 連携（読み取り・追加・更新）・課題 ID 抽出
+│   ├── SyncPlanner.swift              # 追加／更新／維持の判定（純粋関数）
 │   ├── SchedulerService.swift         # 自動同期スケジューラ
 │   └── SyncCoordinator.swift          # 同期処理・設定状態管理
 ├── Storage/
 │   ├── AppSettings.swift              # 設定 (UserDefaults)
-│   └── KeychainHelper.swift           # フィード URL の保存 (Keychain)
+│   ├── KeychainHelper.swift           # フィード URL の保存 (Keychain)
+│   └── SnapshotStore.swift            # 前回同期時の Canvas の値（更新判定用）
 ├── UI/
 │   ├── MenuBarView.swift              # メニューバー UI
 │   ├── OnboardingView.swift           # 初回設定ウィザード（2 ステップ）

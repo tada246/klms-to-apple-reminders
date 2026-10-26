@@ -65,6 +65,11 @@ struct MenuBarView: View {
                     .font(.caption).foregroundColor(.secondary)
                 Text(result.summary)
                     .font(.caption2).foregroundColor(.secondary)
+                if let warning = coordinator.lastWarning {
+                    Text(warning)
+                        .font(.caption2).foregroundColor(.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             } else {
                 Text("未同期").font(.caption).foregroundColor(.secondary)
             }

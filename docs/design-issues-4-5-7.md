@@ -63,7 +63,7 @@ SnapshotStore ──► [assignmentID: SyncedSnapshot]
               [SyncAction]  = add / update(fields) / seed
                     │
                     ▼
-   RemindersService.apply(actions)  ← EventKit を触るのはここだけ（commit は 1 回）
+   RemindersService.apply(plan)  ← EventKit を触るのはここだけ（1 件ずつ commit。失敗を他の課題へ波及させないため）
 ```
 
 - `SyncPlanner` は EventKit に依存しないので XCTest で網羅できる。EventKit 層は薄く保つ。

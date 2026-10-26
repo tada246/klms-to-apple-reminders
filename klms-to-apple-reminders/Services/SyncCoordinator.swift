@@ -7,6 +7,8 @@ class SyncCoordinator: ObservableObject {
     @Published var isSyncing      = false
     @Published var lastResult:    SyncResult?
     @Published var lastError:     String?
+    /// 同期は完了したが、一部の課題を反映できなかったなどの注意（アイコンはエラー表示にしない）。
+    @Published var lastWarning:   String?
     @Published var isConfigured:  Bool
 
     /// フィード URL 未設定などで設定画面を開く必要があるときに AppDelegate へ通知するコールバック
@@ -14,8 +16,10 @@ class SyncCoordinator: ObservableObject {
 
     private let reminders = RemindersService()
     private var settings  = AppSettings()
+    private let snapshotStore: SnapshotStore
 
-    init() {
+    init(snapshotStore: SnapshotStore = UserDefaultsSnapshotStore()) {
+        self.snapshotStore = snapshotStore
         isConfigured = KeychainHelper.loadFeedURL() != nil
     }
 
@@ -32,8 +36,9 @@ class SyncCoordinator: ObservableObject {
             return
         }
 
-        isSyncing  = true
-        lastError  = nil
+        isSyncing   = true
+        lastError   = nil
+        lastWarning = nil
 
         // リマインダーアクセスを先に確認
         do {
@@ -56,29 +61,49 @@ class SyncCoordinator: ObservableObject {
 
     // MARK: - Private
 
+    /// Canvas の課題と既存リマインダーを突き合わせ、追加と更新を行う（計画は `SyncPlanner`）。
     private func performSync(feedURL: URL) async {
         do {
             let client      = ICSFeedClient(feedURL: feedURL)
-            let assignments = try await client.fetchAssignments(daysAhead: settings.daysAhead)
+            let assignments = try await client.fetchAllAssignments()
             let list        = try reminders.findOrCreateList(named: settings.listName)
-            let existing    = await reminders.existingAssignmentIDs(in: list)
 
-            var added = 0, skipped = 0
-            for assignment in assignments {
-                if let id = RemindersService.assignmentID(fromUID: assignment.uid),
-                   existing.contains(id) {
-                    skipped += 1
-                    continue
-                }
-                try reminders.addReminder(assignment, to: list)
-                added += 1
+            guard let records = await reminders.fetchRecords(in: list) else {
+                throw RemindersError.fetchFailed
             }
 
-            lastResult   = SyncResult(added: added, skipped: skipped, timestamp: Date())
+            let previous = snapshotStore.load()
+            let window   = ICSFeedClient.window(daysAhead: settings.daysAhead, now: Date())
+            let plan     = SyncPlanner.plan(feed: assignments, records: records, snapshots: previous, window: window)
+            let outcome  = reminders.apply(plan, to: list)
+
+            snapshotStore.save(
+                SyncPlanner.finalSnapshots(plan: plan, previous: previous, failedIDs: outcome.failedIDs)
+            )
+
+            lastResult = SyncResult(
+                added:     outcome.added,
+                updated:   outcome.updated,
+                unchanged: plan.unchanged,
+                failed:    outcome.failedIDs.count,
+                timestamp: Date()
+            )
+            lastWarning  = Self.warning(plan: plan, outcome: outcome)
             isConfigured = true
 
         } catch {
             lastError = error.localizedDescription
         }
+    }
+
+    private static func warning(plan: SyncPlan, outcome: ApplyOutcome) -> String? {
+        var lines: [String] = []
+        if plan.skippedWithoutID > 0 {
+            lines.append("課題 ID を取り出せない \(plan.skippedWithoutID) 件をスキップしました。")
+        }
+        if let first = outcome.failureMessages.first {
+            lines.append("\(outcome.failureMessages.count) 件を反映できませんでした（\(first)）")
+        }
+        return lines.isEmpty ? nil : lines.joined(separator: "\n")
     }
 }

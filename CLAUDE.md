@@ -72,18 +72,33 @@ Apple リマインダー
 
 同期（SyncCoordinator.sync → performSync）:
   KeychainHelper.loadFeedURL()
-      → ICSFeedClient(feedURL:).fetchAssignments(daysAhead:)
-          → .ics を HTTP GET（Bearer 不要）
+      → ICSFeedClient(feedURL:).fetchAllAssignments()   ← 期間フィルタなしの全件
+          → .ics を HTTP GET（Bearer 不要・HTTP キャッシュ無効）
           → 最小 ICS パーサで VEVENT を抽出
-          → UID が "event-assignment-" で始まるものだけを Assignment 化
-      → RemindersService.existingAssignmentIDs(in:) で既存の課題 ID 集合を取得（完了済みも含む）
-      → 未登録の課題 ID のみ addReminder
+          → UID が "event-assignment-" で始まり DTSTART があるものだけを Assignment 化
+      → RemindersService.fetchRecords(in:) で既存リマインダーを値型で取得（完了済みも含む。失敗は nil）
+      → SnapshotStore.load() で前回同期時の Canvas 値を取得
+      → SyncPlanner.plan(...)  ← 追加／更新／維持を決める純粋関数（EventKit 非依存）
+      → RemindersService.apply(plan)  ← 1 件ずつ commit。失敗しても他の課題は続行
+      → SyncPlanner.finalSnapshots(...) を SnapshotStore.save()（失敗した ID は前回値に戻す）
   URL 未設定なら isConfigured=false、onNeedsConfiguration → AppDelegate が設定を開く
 ```
 
 **ICS パーサ**（`ICSFeedClient.swift` 内 `ICSParser`）: 行アンフォールディング、`BEGIN/END:VEVENT` 抽出、`UID`/`SUMMARY`/`DTSTART`/`URL` 取得、ICS エスケープ解除、DTSTART の3形式（末尾 Z の UTC / `VALUE=DATE` 終日 / `TZID` 付き）に対応。SUMMARY 末尾の `[コース名]` を分離。前提とする実 VEVENT サンプルはファイル冒頭コメント参照。
 
 **.ics の制約と対処**: フィードには提出済みフラグが無い（提出で自動完了にはできない。ICS only 方針のため Canvas API・トークンは使わない）。そのため重複回避は Canvas API の `submitted` ではなく **課題の数値 ID** で行う。UID（`event-assignment-1269269`）とリマインダーの `url`（`…/assignments/1269269`）の両方から同じ ID を正規表現で取り出して突き合わせる（`RemindersService.assignmentID(...)`）。notes にマーカーは埋めない（`eaa7b0f` で廃止）。既存リマインダーは **完了済みを含めて** 走査する。完了課題が再同期で復活しないようにするため。
+
+### 課題の更新反映（イシュー #7）
+
+Canvas 側で課題が変わったら、対応するリマインダーのタイトル／締切／notes（コース名）を更新する。判定は `Services/SyncPlanner.swift`（表は同ファイル冒頭と `docs/design-issues-4-5-7.md` §3.3）。
+
+- 各項目で **F（Canvas の現在値）/ R（リマインダーの現在値）/ S（前回同期で記録した Canvas の値）** を比べる。S は `UserDefaultsSnapshotStore`（UserDefaults の JSON, key `syncSnapshots`）に課題 ID 単位で保存し、同期後は常に F に進める。
+- ユーザーの編集を守る: タイトル／notes は「Canvas だけが変わり、R == S」のときだけ更新。**締切だけは Canvas が変わればユーザー編集があっても Canvas を優先**（公式締切の見落とし防止）。S が無い（機能導入前に作成）リマインダーは、締切のみ一度だけ Canvas に合わせ、タイトル／notes は触らない。
+- **完了済みリマインダーは一切変更しない**（復活もさせない）。
+- 締切の比較は `DueKey`（端末 TZ のグレゴリオ暦で `2026-07-15T23:59` / 終日は `2026-07-15`）。`DateComponents` を直接比べない。
+- 期間フィルタ（`ICSFeedClient.window`）は **新規追加の判定にだけ**使う。既存リマインダーがある課題は期間外でも更新する。
+- Canvas から消えた課題のリマインダーは放置（フィードの収録範囲は有限で、削除と断定できないため）。
+- 提出済みでの自動完了（#4）は ICS only のため対象外。
 
 ### Keychain のキー構造
 
@@ -116,4 +131,6 @@ Apple リマインダー
 - **`KeychainHelperTests`** は `.setUp`/`.tearDown` で `KeychainHelper.deleteFeedURL()` を呼ぶ。`RemindersServiceTests` は課題 ID 抽出（純粋関数）のみを検証し、EventKit には触れない。
 - ユーザーが削除したリマインダーは次回同期で復活する（完了済みは復活しない）。
 - 課題判定は UID プレフィックス `event-assignment-`（クイズも Canvas ではこの系）。他の Canvas インスタンスでは UID 形式が異なる場合がある。
-- 期間フィルタは `now-1日` 〜 `now+daysAhead日`。過去1日を含めるのは締切直後の未提出課題を取りこぼさないため。
+- 期間フィルタは `now-1日` 〜 `now+daysAhead日`（新規追加のみ）。過去1日を含めるのは締切直後の未提出課題を取りこぼさないため。
+- `ICSParser` の日時は `en_US_POSIX` + グレゴリオ暦で解釈する（端末が和暦などでも崩れないように）。`DateFormatter` を新設するときも同様にすること。
+- テスト: `ICSParserTests` / `ICSFeedClientTests`（`URLProtocol` スタブ）/ `SyncPlannerTests`（判定表の全マス）/ `SyncSupportTests`（`DueKey`・`SnapshotStore`・値変換）。EventKit への実書き込みはテストしない。

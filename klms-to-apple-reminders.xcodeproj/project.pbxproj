@@ -7,22 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		019025A90EDD3216331FBE6F /* RemindersServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8632E3A32FE023AC61D3CD5 /* RemindersServiceTests.swift */; };
+		0E2930F16FE7BCA1ECB5FD05 /* ICSFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A8E9E67655D756BC5DF615 /* ICSFeedClient.swift */; };
+		1890AB2889A39B5C5B9ABB55 /* SyncSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4AFEFF07BFC98EC4E8DAED /* SyncSupportTests.swift */; };
+		1D961229FA1F104A5EF41E31 /* ICSParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E689BECB9C035F9FA15FE8F5 /* ICSParserTests.swift */; };
 		201054C8E6F5C2BD3D74BC81 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */; };
-		20BB04F34DB08F5C5D4C29BD /* TokenValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */; };
 		2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1396A859A64078B70C5F5E32 /* AppSettings.swift */; };
 		68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */; };
 		7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */; };
 		864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502DCFA91C698135978CAFB /* RemindersService.swift */; };
 		8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */; };
 		971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9426FE520EAE131785044B /* SyncCoordinator.swift */; };
+		99D6699E47BFC959B533EFDA /* SnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFACAA60FB3DC2F61102E462 /* SnapshotStore.swift */; };
 		AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6641E190882834685560A13E /* KeychainHelperTests.swift */; };
-		C3ADDD32591C823D33CDE08C /* TokenValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */; };
+		B10BEE9D1168216CAD87138E /* SyncModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCE2AB5CBBA36F974759D79 /* SyncModels.swift */; };
+		B52399C4AA82ECF98DC4570E /* ICSFeedClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0E285F084035C944955524 /* ICSFeedClientTests.swift */; };
+		BAFE303DC23368442492FF82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */; };
+		BB3D0F5082DFDC6395DC36D1 /* SyncPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA8A7CB4146EFBBFC218DD /* SyncPlanner.swift */; };
 		CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818DFB44D6DF41D8C5628EB9 /* Assignment.swift */; };
 		D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2A049CFADEADDDACFB512 /* SettingsView.swift */; };
 		D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */; };
 		EBF27D4AA43D0B72776CA2E9 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050C502AB04744DA84179076 /* MenuBarView.swift */; };
 		ED3B8D25B930A45895E8A931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9905C9D28C544F863FA867D3 /* AppDelegate.swift */; };
-		F86D385F6ACD69BCD77EB4C8 /* KLMSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */; };
+		F681A6035A01CCCC77A9855D /* SyncPlannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8AE48C8B5A5824B6667A4A /* SyncPlannerTests.swift */; };
 		FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,26 +45,33 @@
 
 /* Begin PBXFileReference section */
 		050C502AB04744DA84179076 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		08CFCE479E50F2EA35B72D36 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		1396A859A64078B70C5F5E32 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		14C6157C5622A646BACC8BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1BCE2AB5CBBA36F974759D79 /* SyncModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncModels.swift; sourceTree = "<group>"; };
 		23E2A049CFADEADDDACFB512 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "klms-to-apple-reminders.entitlements"; sourceTree = "<group>"; };
-		2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSClient.swift; sourceTree = "<group>"; };
+		3A0E285F084035C944955524 /* ICSFeedClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICSFeedClientTests.swift; sourceTree = "<group>"; };
 		3C2F99DB7D704160C2E3655F /* KLMSToAppleRemindersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KLMSToAppleRemindersApp.swift; sourceTree = "<group>"; };
+		3E8AE48C8B5A5824B6667A4A /* SyncPlannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPlannerTests.swift; sourceTree = "<group>"; };
 		5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
 		5F43E8BAE03BF2187368B5AF /* StatusItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemManager.swift; sourceTree = "<group>"; };
 		61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		6502DCFA91C698135978CAFB /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
 		6641E190882834685560A13E /* KeychainHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
+		67A8E9E67655D756BC5DF615 /* ICSFeedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICSFeedClient.swift; sourceTree = "<group>"; };
 		818DFB44D6DF41D8C5628EB9 /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
+		89EA8A7CB4146EFBBFC218DD /* SyncPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncPlanner.swift; sourceTree = "<group>"; };
 		9905C9D28C544F863FA867D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF9426FE520EAE131785044B /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
 		B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResult.swift; sourceTree = "<group>"; };
-		DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidatorTests.swift; sourceTree = "<group>"; };
-		E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenValidator.swift; sourceTree = "<group>"; };
+		E689BECB9C035F9FA15FE8F5 /* ICSParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICSParserTests.swift; sourceTree = "<group>"; };
+		E8632E3A32FE023AC61D3CD5 /* RemindersServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersServiceTests.swift; sourceTree = "<group>"; };
 		E9008164AF599AB4F0D30289 /* klms-to-apple-reminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klms-to-apple-reminders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9DAA67BD1A554AC8447F39D /* klms-to-apple-remindersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "klms-to-apple-remindersTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD4AFEFF07BFC98EC4E8DAED /* SyncSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSupportTests.swift; sourceTree = "<group>"; };
+		FFACAA60FB3DC2F61102E462 /* SnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -85,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				818DFB44D6DF41D8C5628EB9 /* Assignment.swift */,
+				1BCE2AB5CBBA36F974759D79 /* SyncModels.swift */,
 				B826A746E4D1AD0F5B1DD9A8 /* SyncResult.swift */,
 			);
 			path = Models;
@@ -93,8 +108,12 @@
 		3BC1D91CC53F784F6DCFC1BA /* klms-to-apple-remindersTests */ = {
 			isa = PBXGroup;
 			children = (
+				3A0E285F084035C944955524 /* ICSFeedClientTests.swift */,
+				E689BECB9C035F9FA15FE8F5 /* ICSParserTests.swift */,
 				6641E190882834685560A13E /* KeychainHelperTests.swift */,
-				DE35CF72F2439C2EF69F3455 /* TokenValidatorTests.swift */,
+				E8632E3A32FE023AC61D3CD5 /* RemindersServiceTests.swift */,
+				3E8AE48C8B5A5824B6667A4A /* SyncPlannerTests.swift */,
+				FD4AFEFF07BFC98EC4E8DAED /* SyncSupportTests.swift */,
 			);
 			path = "klms-to-apple-remindersTests";
 			sourceTree = "<group>";
@@ -102,6 +121,7 @@
 		501EC53E0C69B50C5FBB7160 /* klms-to-apple-reminders */ = {
 			isa = PBXGroup;
 			children = (
+				06CE5DCC6A34858E0BE938A0 /* Assets.xcassets */,
 				14C6157C5622A646BACC8BE7 /* Info.plist */,
 				2585009948535E40C4B6BD93 /* klms-to-apple-reminders.entitlements */,
 				F1B3BEC41909CB57A574B2E0 /* App */,
@@ -116,10 +136,11 @@
 		66DCBB7A7F2AEFBB75BDD2A0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				2E475F92D9C2B6FC2B77A489 /* KLMSClient.swift */,
+				67A8E9E67655D756BC5DF615 /* ICSFeedClient.swift */,
 				6502DCFA91C698135978CAFB /* RemindersService.swift */,
 				5E29AB988F74B04FEAC75F60 /* SchedulerService.swift */,
 				AF9426FE520EAE131785044B /* SyncCoordinator.swift */,
+				89EA8A7CB4146EFBBFC218DD /* SyncPlanner.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -138,7 +159,7 @@
 			children = (
 				1396A859A64078B70C5F5E32 /* AppSettings.swift */,
 				61C5143CDBAB0C4B2C87D08F /* KeychainHelper.swift */,
-				E0B4B4E55CD74E49EF87AB46 /* TokenValidator.swift */,
+				FFACAA60FB3DC2F61102E462 /* SnapshotStore.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -178,6 +199,7 @@
 			buildConfigurationList = 3D9185CD68956B3AEC6CE8DD /* Build configuration list for PBXNativeTarget "klms-to-apple-reminders" */;
 			buildPhases = (
 				CCADCB377F75423BF13EEE6A /* Sources */,
+				3F062334BC27E9CE43502627 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -229,6 +251,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		3F062334BC27E9CE43502627 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAFE303DC23368442492FF82 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CCADCB377F75423BF13EEE6A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -237,7 +270,7 @@
 				ED3B8D25B930A45895E8A931 /* AppDelegate.swift in Sources */,
 				2A5A555B6B1D90463F639A6E /* AppSettings.swift in Sources */,
 				CA5EA96771CD2FB9FBD3DD78 /* Assignment.swift in Sources */,
-				F86D385F6ACD69BCD77EB4C8 /* KLMSClient.swift in Sources */,
+				0E2930F16FE7BCA1ECB5FD05 /* ICSFeedClient.swift in Sources */,
 				FDA0B9442B71E5866257CEF6 /* KLMSToAppleRemindersApp.swift in Sources */,
 				D5F3A91A36AE2B45BEC6FD1D /* KeychainHelper.swift in Sources */,
 				EBF27D4AA43D0B72776CA2E9 /* MenuBarView.swift in Sources */,
@@ -245,10 +278,12 @@
 				864A49E6D51EA3884D56F9B3 /* RemindersService.swift in Sources */,
 				68B798F248903B55B1190D54 /* SchedulerService.swift in Sources */,
 				D42B48010BB541381E5DE4E6 /* SettingsView.swift in Sources */,
+				99D6699E47BFC959B533EFDA /* SnapshotStore.swift in Sources */,
 				7C18E633E05FF9695FD8FB6D /* StatusItemManager.swift in Sources */,
 				971B3901AB03A02BBD9F5796 /* SyncCoordinator.swift in Sources */,
+				B10BEE9D1168216CAD87138E /* SyncModels.swift in Sources */,
+				BB3D0F5082DFDC6395DC36D1 /* SyncPlanner.swift in Sources */,
 				8CB42B97FD75E34284C87AB1 /* SyncResult.swift in Sources */,
-				20BB04F34DB08F5C5D4C29BD /* TokenValidator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,8 +291,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B52399C4AA82ECF98DC4570E /* ICSFeedClientTests.swift in Sources */,
+				1D961229FA1F104A5EF41E31 /* ICSParserTests.swift in Sources */,
 				AF0727B48E4A9E9EB8CB331A /* KeychainHelperTests.swift in Sources */,
-				C3ADDD32591C823D33CDE08C /* TokenValidatorTests.swift in Sources */,
+				019025A90EDD3216331FBE6F /* RemindersServiceTests.swift in Sources */,
+				F681A6035A01CCCC77A9855D /* SyncPlannerTests.swift in Sources */,
+				1890AB2889A39B5C5B9ABB55 /* SyncSupportTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

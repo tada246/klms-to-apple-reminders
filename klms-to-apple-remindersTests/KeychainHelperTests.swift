@@ -5,57 +5,48 @@ final class KeychainHelperTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        KeychainHelper.delete()
+        KeychainHelper.deleteFeedURL()
     }
 
     override func tearDown() {
-        KeychainHelper.delete()
+        KeychainHelper.deleteFeedURL()
         super.tearDown()
     }
 
     // MARK: - 保存・読み込み
 
-    func testSaveAndLoad() throws {
-        let token = "abc123XYZ"
-        try KeychainHelper.save(token)
-        let loaded = KeychainHelper.load()
-        XCTAssertEqual(loaded, token, "保存したトークンが正しく読み込めること")
+    func testSaveAndLoadFeedURL() throws {
+        let url = "https://lms.keio.jp/feeds/calendars/user_abc123.ics"
+        try KeychainHelper.saveFeedURL(url)
+        XCTAssertEqual(KeychainHelper.loadFeedURL(), url, "保存したフィード URL が正しく読み込めること")
     }
 
     func testLoadReturnsNilWhenEmpty() {
-        let loaded = KeychainHelper.load()
-        XCTAssertNil(loaded, "トークンが未保存の場合 nil を返すこと")
+        XCTAssertNil(KeychainHelper.loadFeedURL(), "URL が未保存の場合 nil を返すこと")
     }
 
     func testOverwrite() throws {
-        try KeychainHelper.save("firstToken123")
-        try KeychainHelper.save("secondToken456")
-        let loaded = KeychainHelper.load()
-        XCTAssertEqual(loaded, "secondToken456", "上書き保存が正しく動作すること")
+        try KeychainHelper.saveFeedURL("https://lms.keio.jp/feeds/calendars/user_first.ics")
+        try KeychainHelper.saveFeedURL("https://lms.keio.jp/feeds/calendars/user_second.ics")
+        XCTAssertEqual(
+            KeychainHelper.loadFeedURL(),
+            "https://lms.keio.jp/feeds/calendars/user_second.ics",
+            "上書き保存が正しく動作すること"
+        )
     }
 
     func testDelete() throws {
-        try KeychainHelper.save("abc123")
-        KeychainHelper.delete()
-        let loaded = KeychainHelper.load()
-        XCTAssertNil(loaded, "削除後は nil を返すこと")
+        try KeychainHelper.saveFeedURL("https://lms.keio.jp/feeds/calendars/user_abc.ics")
+        KeychainHelper.deleteFeedURL()
+        XCTAssertNil(KeychainHelper.loadFeedURL(), "削除後は nil を返すこと")
     }
 
-    func testSaveLongToken() throws {
-        // 実際のCanvas APIトークンは64文字
-        let longToken = "hY3wVfB9FfMLUU9nrytV3PmcU44wPXrw8QFULVKJWUkyQmMJ2vYnBPXDk2uKVNVv"
-        XCTAssertEqual(longToken.count, 64)
-        try KeychainHelper.save(longToken)
-        let loaded = KeychainHelper.load()
-        XCTAssertEqual(loaded, longToken, "64文字のトークンが正確に保存・読み込みできること")
-    }
-
-    func testTokenNotCorrupted() throws {
-        // 大文字・小文字・数字が混在するトークンで文字化けしないこと
-        let token = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789AB"
-        try KeychainHelper.save(token)
-        let loaded = KeychainHelper.load()
-        XCTAssertEqual(loaded, token, "文字化けなく保存・読み込みできること")
-        XCTAssertEqual(loaded?.count, token.count, "文字数が変わっていないこと")
+    func testURLNotCorrupted() throws {
+        // 秘密トークンを含む長い URL が文字化けなく保存・読み込みできること
+        let url = "https://lms.keio.jp/feeds/calendars/user_ABCdef0123456789ghijKLMNOPqrstuvwXYZ.ics"
+        try KeychainHelper.saveFeedURL(url)
+        let loaded = KeychainHelper.loadFeedURL()
+        XCTAssertEqual(loaded, url, "文字化けなく保存・読み込みできること")
+        XCTAssertEqual(loaded?.count, url.count, "文字数が変わっていないこと")
     }
 }

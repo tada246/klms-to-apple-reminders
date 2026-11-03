@@ -7,10 +7,6 @@ private let weekdayLabels: [(Int, String)] = [
 ]
 
 struct SettingsView: View {
-    @State private var token: String = ""
-    @State private var showToken = false
-    @State private var tokenSaveWork: DispatchWorkItem?
-
     @AppStorage("listName")      private var listName: String = "慶應課題"
     @AppStorage("daysAhead")     private var daysAhead: Int = 30
     @AppStorage("syncInterval")  private var syncIntervalRaw: String = SyncInterval.daily.rawValue
@@ -20,50 +16,54 @@ struct SettingsView: View {
     @AppStorage("autoSync")      private var autoSync: Bool = true
     @AppStorage("launchAtLogin") private var launchAtLogin: Bool = true
 
+    @State private var feedURLInput: String = KeychainHelper.loadFeedURL() ?? ""
+    @State private var feedURLError: String?
+    @State private var feedURLSaved: Bool = false
+
     var onScheduleChanged: (() -> Void)?
+    var onFeedURLSaved:    (() -> Void)?
+    var onSyncNow:         (() -> Void)?
 
     private var syncInterval: SyncInterval {
         SyncInterval(rawValue: syncIntervalRaw) ?? .daily
     }
 
+    private var isConfigured: Bool {
+        KeychainHelper.loadFeedURL() != nil
+    }
+
     var body: some View {
         Form {
-            // MARK: トークン
+            // MARK: Canvas カレンダーフィード
             Section {
+                TextField("https://lms.keio.jp/feeds/calendars/xxxxx.ics", text: $feedURLInput)
+                    .textFieldStyle(.roundedBorder)
+
+                if let error = feedURLError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+
+                if feedURLSaved {
+                    Label("保存しました", systemImage: "checkmark.circle.fill")
+                        .font(.caption)
+                        .foregroundColor(.green)
+                }
+
                 HStack {
-                    if showToken {
-                        TextField("トークンを入力", text: $token)
-                    } else {
-                        SecureField("トークンを入力", text: $token)
+                    Button("保存") { saveFeedURL() }
+                        .disabled(feedURLInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                    if isConfigured, let onSyncNow {
+                        Button("今すぐ同期") { onSyncNow() }
                     }
-                    Button(showToken ? "隠す" : "表示") { showToken.toggle() }
-                        .buttonStyle(.plain)
-                        .foregroundColor(.accentColor)
-                        .font(.caption)
                 }
-                if !token.isEmpty && !TokenValidator.isValid(token) {
-                    Label("英数字のみ使用できます（スペース・記号は不可）", systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption)
-                        .foregroundColor(.orange)
-                }
-                Link("トークンを発行する →", destination: URL(string: "https://lms.keio.jp/profile/settings")!)
-                    .font(.caption)
-                Button("トークンを削除", role: .destructive) {
-                    tokenSaveWork?.cancel()
-                    KeychainHelper.delete()
-                    token = ""
-                }
-                .font(.caption)
             } header: {
-                Text("K-LMS APIトークン")
+                Text("Canvas カレンダーフィード")
             } footer: {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("取得方法: K-LMS プロフィール設定 → 承認済みのアプリケーション → 新しいアクセストークン → 目的を入力 → トークンの生成 → コピー")
-                    Text("⚠️ 生成画面を閉じると再表示されません。必ずコピーしてから閉じてください。")
-                        .foregroundColor(.orange)
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
+                Text("Canvas → カレンダー → 左下の「カレンダーフィード」の URL をコピーして貼り付けてください。")
+                    .font(.caption).foregroundColor(.secondary)
             }
 
             // MARK: リマインダー設定
@@ -129,11 +129,8 @@ struct SettingsView: View {
                 Toggle("ログイン時に自動起動", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { enabled in
                         if #available(macOS 13.0, *) {
-                            if enabled {
-                                try? SMAppService.mainApp.register()
-                            } else {
-                                try? SMAppService.mainApp.unregister()
-                            }
+                            if enabled { try? SMAppService.mainApp.register() }
+                            else        { try? SMAppService.mainApp.unregister() }
                         }
                     }
             }
@@ -141,22 +138,32 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .frame(width: 420)
         .padding()
-        .onAppear {
-            token = KeychainHelper.load() ?? ""
+        .onChange(of: autoSync)        { _ in onScheduleChanged?() }
+        .onChange(of: syncIntervalRaw) { _ in onScheduleChanged?() }
+        .onChange(of: syncHour)        { _ in onScheduleChanged?() }
+        .onChange(of: syncMinute)      { _ in onScheduleChanged?() }
+        .onChange(of: syncWeekday)     { _ in onScheduleChanged?() }
+        .onChange(of: feedURLInput)    { _ in feedURLSaved = false }
+    }
+
+    // MARK: - Feed URL
+
+    private func saveFeedURL() {
+        let trimmed = feedURLInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix("https://"), trimmed.contains(".ics") else {
+            feedURLError = "有効な .ics フィード URL を入力してください（https:// で始まる URL）。"
+            feedURLSaved = false
+            return
         }
-        // トークンは0.8秒の debounce で自動保存（英数字のみ）
-        .onChange(of: token) { newValue in
-            tokenSaveWork?.cancel()
-            guard !newValue.isEmpty, TokenValidator.isValid(newValue) else { return }
-            let work = DispatchWorkItem { try? KeychainHelper.save(newValue) }
-            tokenSaveWork = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
+
+        do {
+            try KeychainHelper.saveFeedURL(trimmed)
+            feedURLError = nil
+            feedURLSaved = true
+            onFeedURLSaved?()
+        } catch {
+            feedURLError = error.localizedDescription
+            feedURLSaved = false
         }
-        // スケジュール設定変更時は即座に再スケジュール
-        .onChange(of: autoSync)         { _ in onScheduleChanged?() }
-        .onChange(of: syncIntervalRaw)  { _ in onScheduleChanged?() }
-        .onChange(of: syncHour)         { _ in onScheduleChanged?() }
-        .onChange(of: syncMinute)       { _ in onScheduleChanged?() }
-        .onChange(of: syncWeekday)      { _ in onScheduleChanged?() }
     }
 }

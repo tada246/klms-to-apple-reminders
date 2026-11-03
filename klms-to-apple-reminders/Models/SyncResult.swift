@@ -2,11 +2,15 @@ import Foundation
 
 struct SyncResult {
     let added: Int
-    let skipped: Int
+    let updated: Int
+    let unchanged: Int
+    let failed: Int
     let timestamp: Date
 
     var summary: String {
-        "\(added)件追加、\(skipped)件スキップ"
+        var text = "追加\(added)・更新\(updated)・変更なし\(unchanged)"
+        if failed > 0 { text += "・失敗\(failed)" }
+        return text
     }
 
     var formattedTime: String {

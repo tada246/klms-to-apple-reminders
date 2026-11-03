@@ -17,3 +17,7 @@ __pycache__/
 
 # 認証情報
 .env
+
+# ビルド成果物・Xcode が自動生成するワークスペース設定
+build/
+*.xcodeproj/project.xcworkspace/xcshareddata/

@@ -3,24 +3,40 @@ import SwiftUI
 import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    private var statusItemManager: StatusItemManager!
-    private var coordinator: SyncCoordinator!
-    private var scheduler: SchedulerService!
-    private var settingsWindow: NSWindow?
-    private var onboardingWindow: NSWindow?
+    private var statusItemManager:  StatusItemManager!
+    private var coordinator:        SyncCoordinator!
+    private var scheduler:          SchedulerService!
+    private var settingsWindow:     NSWindow?
+    private var onboardingWindow:   NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // ユニットテストはこのアプリをホストとして実行される。ここで起動処理を進めると、
+        // テスト用ビルドがログイン項目に登録されたり、設定ウィンドウが開いたりしてしまう。
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil { return }
+
         coordinator = SyncCoordinator()
-        scheduler = SchedulerService()
+        scheduler   = SchedulerService()
         scheduler.coordinator = coordinator
-        statusItemManager = StatusItemManager(coordinator: coordinator, onOpenSettings: openSettings)
+
+        statusItemManager = StatusItemManager(
+            coordinator:    coordinator,
+            onOpenSettings: openSettings
+        )
+
+        // フィード URL 未設定 → 設定ウィンドウを自動表示
+        coordinator.onNeedsConfiguration = { [weak self] in
+            self?.openSettings()
+        }
 
         let settings = AppSettings()
-
         if !settings.hasCompletedOnboarding {
             showOnboarding()
         } else {
             startServices(settings: settings)
+            // 起動時にフィード URL が未設定なら設定画面を開いて貼り付けを促す
+            if !coordinator.isConfigured {
+                openSettings()
+            }
         }
     }
 
@@ -31,12 +47,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self?.onboardingWindow?.close()
             self?.onboardingWindow = nil
             self?.startServices(settings: AppSettings())
+            // 設定完了後にフィード URL 貼り付けを促すため設定画面を表示
+            self?.openSettings()
         }
+
         let hosting = NSHostingController(rootView: view)
-        let window = NSWindow(contentViewController: hosting)
+        let window  = NSWindow(contentViewController: hosting)
         window.title = "K-LMS → Reminders"
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 400, height: 340))
+        window.setContentSize(NSSize(width: 400, height: 400))
         window.center()
         window.isReleasedWhenClosed = false
         onboardingWindow = window
@@ -53,9 +72,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if settings.autoSync {
             scheduler.schedule(
                 interval: settings.syncInterval,
-                hour: settings.syncHour,
-                minute: settings.syncMinute,
-                weekday: settings.syncWeekday
+                hour:     settings.syncHour,
+                minute:   settings.syncMinute,
+                weekday:  settings.syncWeekday
             )
         }
     }
@@ -69,16 +88,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if s.autoSync {
                     self?.scheduler.schedule(
                         interval: s.syncInterval,
-                        hour: s.syncHour,
-                        minute: s.syncMinute,
-                        weekday: s.syncWeekday
+                        hour:     s.syncHour,
+                        minute:   s.syncMinute,
+                        weekday:  s.syncWeekday
                     )
                 } else {
                     self?.scheduler.cancel()
                 }
+            }, onFeedURLSaved: { [weak self] in
+                Task { @MainActor [weak self] in
+                    self?.coordinator.notifyConfigured()
+                }
+            }, onSyncNow: { [weak self] in
+                Task { @MainActor [weak self] in
+                    await self?.coordinator.sync()
+                }
             })
             let hosting = NSHostingController(rootView: view)
-            let window = NSWindow(contentViewController: hosting)
+            let window  = NSWindow(contentViewController: hosting)
             window.title = "K-LMS 設定"
             window.styleMask = [.titled, .closable]
             window.setContentSize(NSSize(width: 440, height: 420))
